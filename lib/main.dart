@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'vido trial',
-      home: BudgetsPage(),
+      home: BudgetsPage()
     );
   }
 }

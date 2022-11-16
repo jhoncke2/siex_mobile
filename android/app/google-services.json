@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "903573754844",
+    "project_id": "siex-notifications",
+    "storage_bucket": "siex-notifications.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:903573754844:android:da8be647938cb3039bb519",
+        "android_client_info": {
+          "package_name": "com.example.siex"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "903573754844-vt715t2s61lll5010hch502bgg0vua2c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcI-w_bM6HmkWl42UpQmGVvuvIYSBo_Xo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "903573754844-vt715t2s61lll5010hch502bgg0vua2c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

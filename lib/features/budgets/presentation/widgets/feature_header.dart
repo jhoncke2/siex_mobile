@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../domain/entities/feature.dart';
 import 'feature_state_button.dart';
 
