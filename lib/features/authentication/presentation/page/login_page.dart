@@ -109,7 +109,7 @@ class LoginPage extends StatelessWidget {
   void _managePostFrameCallbacks(BuildContext context, AuthenticationState state){
     if(state is OnAuthenticated) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.of(context).pushReplacementNamed(globals.NavigationRoutes.requests);
+        Navigator.of(context).pushReplacementNamed(globals.NavigationRoutes.budgets);
       });
     }
   }

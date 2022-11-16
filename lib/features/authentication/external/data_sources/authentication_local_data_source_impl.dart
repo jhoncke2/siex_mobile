@@ -1,4 +1,3 @@
-import 'package:siex/core/external/persistence.dart';
 import 'package:siex/core/external/push_notifications_manager.dart';
 import 'package:siex/core/external/shared_preferences_manager.dart';
 import 'package:siex/features/authentication/domain/entities/user.dart';
@@ -6,15 +5,13 @@ import '../../data/data_sources/authentication_local_data_source.dart';
 
 class AuthenticationLocalDataSourceImpl implements AuthenticationLocalDataSource{
   static const accessTokenKey = 'access_token';
-  static const id = 'id';
+  static const idKey = 'id';
   static const emailKey = 'user';
   static const passwordKey = 'password';
   final SharedPreferencesManager preferencesManager;
-  final DatabaseManager dbManager;
   final PushNotificationsTokenGetter pushNotificationsTokenGetter;
   const AuthenticationLocalDataSourceImpl({
     required this.preferencesManager,
-    required this.dbManager,
     required this.pushNotificationsTokenGetter
   });
   

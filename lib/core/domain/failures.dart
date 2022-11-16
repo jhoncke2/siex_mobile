@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:gap_authorizations/core/domain/exceptions.dart';
+import 'package:siex/core/domain/exceptions.dart';
 
 class Failure extends Equatable{
   final String message;
