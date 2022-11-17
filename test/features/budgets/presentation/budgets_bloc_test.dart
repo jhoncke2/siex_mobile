@@ -48,6 +48,7 @@ void main(){
   group('update feature', _testUpdateFeatureGroup);
   group('end budget updating', _testEndBudgetUpdatingGroup);
   group('load cdps', _testLoadCdpsGroup);
+  group('change cdps type', _testChangeCdpsTypeGroup);
   group('update cdps', _testUpdateCdpsGroup);
 }
 
@@ -142,68 +143,133 @@ void _testSelectBudgetGroup(){
 }
 
 void _testChangeFeatureSelectionGroup(){
-  late List<Feature> tCdps;
+  late List<Feature> tNewCdps;
+  late CdpsGroup tCdps;
   late List<bool> tSelectionInit;
   setUp((){
-    tCdps = [
+    tCdps = CdpsGroup(
+      newCdps: [
+        Feature(id: 100, name: 'f_100', date: DateTime.now(), price: 2000000, state: null),
+        Feature(id: 101, name: 'f_101', date: DateTime.now(), price: 2000000, state: FeatureState.Permitted),
+        Feature(id: 102, name: 'f_102', date: DateTime.now(), price: 2000000, state: null)
+      ], 
+      oldCdps: [
+        Feature(id: 200, name: 'f_200', date: DateTime.now(), price: 2000000, state: FeatureState.Permitted),
+        Feature(id: 201, name: 'f_201', date: DateTime.now(), price: 2000000, state: FeatureState.Permitted),
+        Feature(id: 202, name: 'f_202', date: DateTime.now(), price: 2000000, state: FeatureState.Permitted),
+        Feature(id: 203, name: 'f_203', date: DateTime.now(), price: 2000000, state: FeatureState.Denied)
+      ]
+    );
+    tNewCdps = [
       Feature(id: 100, name: 'f_100', date: DateTime.now(), price: 2000000, state: null),
       Feature(id: 101, name: 'f_101', date: DateTime.now(), price: 2000000, state: FeatureState.Permitted),
       Feature(id: 102, name: 'f_102', date: DateTime.now(), price: 2000000, state: null)
     ];
   });
 
-  group('when current cdps are new', (){
 
-  });
-
-  test('shold yield the expected ordered states when the selection updated feature is the first and it is unselected', ()async{
+  test('shold yield the expected ordered states when the selection updated feature is the first and it is unselected and current state is newCdps', ()async{
     tSelectionInit = [false, true, false];
     budgetsBloc.emit(OnNewCdpsSuccess(
       cdps: tCdps, 
       featuresSelection: tSelectionInit, 
-      canUpdate: false
+      canUpdateNewCdps: false
     ));
     final expectedOrderedStates = [
       OnNewCdpsSuccess(
         cdps: tCdps, 
         featuresSelection: const [true, true, false], 
-        canUpdate: false
+        canUpdateNewCdps: false
       )
     ];
     expectLater(budgetsBloc.stream, emitsInOrder(expectedOrderedStates));
     budgetsBloc.add(ChangeFeatureSelectionEvent(index: 0));
   });
 
-  test('shold yield the expected ordered states when the selection updated feature is the first and it is selected', ()async{
+  test('shold yield the expected ordered states when the selection updated feature is the first and it is selected and current state is newCdps', ()async{
     tSelectionInit = [true, true, false];
     budgetsBloc.emit(OnNewCdpsSuccess(
       cdps: tCdps, 
       featuresSelection: tSelectionInit, 
-      canUpdate: false
+      canUpdateNewCdps: false
     ));
     final expectedOrderedStates = [
       OnNewCdpsSuccess(
         cdps: tCdps, 
         featuresSelection: const [false, true, false], 
-        canUpdate: false
+        canUpdateNewCdps: false
       )
     ];
     expectLater(budgetsBloc.stream, emitsInOrder(expectedOrderedStates));
     budgetsBloc.add(ChangeFeatureSelectionEvent(index: 0));
   });
 
-  test('shold yield the expected ordered states when the selection updated feature is the second and it is selected', ()async{
+  test('shold yield the expected ordered states when the selection updated feature is the second and it is selected and current state is newCdps', ()async{
     tSelectionInit = [true, true, false];
     budgetsBloc.emit(OnNewCdpsSuccess(
       cdps: tCdps, 
       featuresSelection: tSelectionInit, 
-      canUpdate: true
+      canUpdateNewCdps: true
     ));
     final expectedOrderedStates = [
       OnNewCdpsSuccess(
         cdps: tCdps, 
         featuresSelection: const [true, false, false], 
-        canUpdate: true
+        canUpdateNewCdps: true
+      )
+    ];
+    expectLater(budgetsBloc.stream, emitsInOrder(expectedOrderedStates));
+    budgetsBloc.add(ChangeFeatureSelectionEvent(index: 1));
+  });
+
+  test('shold yield the expected ordered states when the selection updated feature is the first and it is unselected and current state is oldCdps', ()async{
+    tSelectionInit = [false, true, false, false];
+    budgetsBloc.emit(OnOldCdps(
+      cdps: tCdps,
+      featuresSelection: tSelectionInit,
+      canUpdateNewCdps: true
+    ));
+    final expectedOrderedStates = [
+      OnOldCdps(
+        cdps: tCdps, 
+        featuresSelection: const [true, true, false, false],
+        canUpdateNewCdps: true
+      )
+    ];
+    expectLater(budgetsBloc.stream, emitsInOrder(expectedOrderedStates));
+    budgetsBloc.add(ChangeFeatureSelectionEvent(index: 0));
+  });
+
+  test('shold yield the expected ordered states when the selection updated feature is the first and it is selected and current state is oldCdps', ()async{
+    tSelectionInit = [true, true, false, false];
+    budgetsBloc.emit(OnOldCdps(
+      cdps: tCdps, 
+      featuresSelection: tSelectionInit,
+      canUpdateNewCdps: false
+    ));
+    final expectedOrderedStates = [
+      OnOldCdps(
+        cdps: tCdps, 
+        featuresSelection: const [false, true, false, false],
+        canUpdateNewCdps: false
+      )
+    ];
+    expectLater(budgetsBloc.stream, emitsInOrder(expectedOrderedStates));
+    budgetsBloc.add(ChangeFeatureSelectionEvent(index: 0));
+  });
+
+  test('shold yield the expected ordered states when the selection updated feature is the second and it is selected and current state is oldCdps', ()async{
+    tSelectionInit = [true, true, false, false];
+    budgetsBloc.emit(OnOldCdps(
+      cdps: tCdps, 
+      featuresSelection: tSelectionInit,
+      canUpdateNewCdps: true
+    ));
+    final expectedOrderedStates = [
+      OnOldCdps(
+        cdps: tCdps, 
+        featuresSelection: const [true, false, false, false],
+        canUpdateNewCdps: true
       )
     ];
     expectLater(budgetsBloc.stream, emitsInOrder(expectedOrderedStates));
@@ -234,13 +300,13 @@ void _testUpdateFeatureGroup(){
     budgetsBloc.emit(OnNewCdpsSuccess(
       cdps: tCdpsInit, 
       featuresSelection: tFeaturesSelection, 
-      canUpdate: false
+      canUpdateNewCdps: false
     ));
     final states = [
       OnNewCdpsSuccess(
         cdps: tCdpsUpdated, 
         featuresSelection: tFeaturesSelection, 
-        canUpdate: true
+        canUpdateNewCdps: true
       )
     ];
     expectLater(budgetsBloc.stream, emitsInOrder(states));
@@ -264,13 +330,13 @@ void _testUpdateFeatureGroup(){
     budgetsBloc.emit(OnNewCdpsSuccess(
       cdps: tCdpsInit, 
       featuresSelection: tFeaturesSelection, 
-      canUpdate: false
+      canUpdateNewCdps: false
     ));
     final states = [
       OnNewCdpsSuccess(
         cdps: tCdpsUpdated, 
         featuresSelection: tFeaturesSelection, 
-        canUpdate: true
+        canUpdateNewCdps: true
       )
     ];
     expectLater(budgetsBloc.stream, emitsInOrder(states));
@@ -294,13 +360,13 @@ void _testUpdateFeatureGroup(){
     budgetsBloc.emit(OnNewCdpsSuccess(
       cdps: tCdpsInit, 
       featuresSelection: tFeaturesSelection, 
-      canUpdate: false
+      canUpdateNewCdps: false
     ));
     final states = [
       OnNewCdpsSuccess(
         cdps: tCdpsUpdated, 
         featuresSelection: tFeaturesSelection, 
-        canUpdate: true
+        canUpdateNewCdps: true
       )
     ];
     expectLater(budgetsBloc.stream, emitsInOrder(states));
@@ -357,13 +423,27 @@ void _testEndBudgetUpdatingGroup(){
 }
 
 void _testLoadCdpsGroup(){
-  late List<Feature> tCdps;
+  late List<Feature> tNewCdps;
+  late CdpsGroup tCdps;
   setUp((){
-    tCdps = [
+    tNewCdps = [
       Feature(id: 100, name: 'f_100', date: DateTime.now(), price: 2000000, state: null),
       Feature(id: 101, name: 'f_101', date: DateTime.now(), price: 2000000, state: null),
       Feature(id: 102, name: 'f_102', date: DateTime.now(), price: 3000000, state: null)
     ];
+    tCdps = CdpsGroup(
+      newCdps: [
+        Feature(id: 100, name: 'f_100', date: DateTime.now(), price: 2000000, state: null),
+        Feature(id: 101, name: 'f_101', date: DateTime.now(), price: 2000000, state: null),
+        Feature(id: 102, name: 'f_102', date: DateTime.now(), price: 3000000, state: null)
+      ], 
+      oldCdps: [
+        Feature(id: 200, name: 'f_100', date: DateTime.now(), price: 2000000, state: null),
+        Feature(id: 201, name: 'f_101', date: DateTime.now(), price: 2000000, state: null),
+        Feature(id: 202, name: 'f_102', date: DateTime.now(), price: 3000000, state: null),
+        Feature(id: 203, name: 'f_102', date: DateTime.now(), price: 3000000, state: null)
+      ]
+    );
     when(getCdps())
         .thenAnswer((_) async => Right(tCdps));
   });
@@ -379,8 +459,8 @@ void _testLoadCdpsGroup(){
       OnLoadingBudgets(),
       OnNewCdpsSuccess(
         cdps: tCdps, 
-        canUpdate: false,
-        featuresSelection: const [false, false, false]
+        featuresSelection: const [false, false, false],
+        canUpdateNewCdps: false
       )
     ];
     expectLater(budgetsBloc.stream, emitsInOrder(states));
@@ -388,30 +468,100 @@ void _testLoadCdpsGroup(){
   });
 }
 
-void _testUpdateCdpsGroup(){
-  late List<Feature> tCdpsInit;
-  late List<bool> tFeaturesSelectionInit;
+void _testChangeCdpsTypeGroup(){
+  late CdpsGroup tCdps;
   setUp((){
-    tCdpsInit = [
-      Feature(id: 100, name: 'f_100', date: DateTime.now(), price: 2000000, state: FeatureState.Permitted),
-      Feature(id: 101, name: 'f_101', date: DateTime.now(), price: 2000000, state: null),
-      Feature(id: 102, name: 'f_102', date: DateTime.now(), price: 3000000, state: null)
+    tCdps = CdpsGroup(
+      newCdps: [
+        Feature(id: 100, name: 'f_100', date: DateTime.now(), price: 2000000, state: null),
+        Feature(id: 101, name: 'f_101', date: DateTime.now(), price: 2000000, state: null),
+        Feature(id: 102, name: 'f_102', date: DateTime.now(), price: 3000000, state: null)
+      ], 
+      oldCdps: [
+        Feature(id: 200, name: 'f_100', date: DateTime.now(), price: 2000000, state: FeatureState.Permitted),
+        Feature(id: 201, name: 'f_101', date: DateTime.now(), price: 2000000, state: FeatureState.Permitted),
+        Feature(id: 202, name: 'f_102', date: DateTime.now(), price: 3000000, state: FeatureState.Permitted),
+        Feature(id: 203, name: 'f_102', date: DateTime.now(), price: 3000000, state: FeatureState.Permitted)
+      ]
+    );
+  });
+
+  test('should emit the expected ordered states when current state is newCdps', ()async{
+    budgetsBloc.emit(OnNewCdpsSuccess(
+      cdps: tCdps, 
+      featuresSelection: const [false, true, false], 
+      canUpdateNewCdps: false
+    ));
+    final expectedOrderedStates = [
+      OnOldCdps(
+        cdps: tCdps, 
+        featuresSelection: const [false, false, false, false],
+        canUpdateNewCdps: false
+      )
     ];
+    expectLater(budgetsBloc.stream, emitsInOrder(expectedOrderedStates));
+    budgetsBloc.add(ChangeCdpsTypeEvent(CdpsType.oldType));
+  });
+
+  test('should emit the expected ordered states when current state is newCdps', ()async{
+    budgetsBloc.emit(OnOldCdps(
+      cdps: tCdps, 
+      featuresSelection: const [false, true, false, true],
+      canUpdateNewCdps: true
+    ));
+    final expectedOrderedStates = [
+      OnNewCdpsSuccess(
+        cdps: tCdps, 
+        featuresSelection: const [false, false, false], 
+        canUpdateNewCdps: true
+      )
+    ];
+    expectLater(budgetsBloc.stream, emitsInOrder(expectedOrderedStates));
+    budgetsBloc.add(ChangeCdpsTypeEvent(CdpsType.newType));
+  });
+}
+
+void _testUpdateCdpsGroup(){
+  late List<bool> tFeaturesSelectionInit;
+  late CdpsGroup tCdpsInit;
+  setUp((){
+    tCdpsInit = CdpsGroup(
+      newCdps: [
+        Feature(id: 100, name: 'f_100', date: DateTime.now(), price: 2000000, state: null),
+        Feature(id: 101, name: 'f_101', date: DateTime.now(), price: 2000000, state: null),
+        Feature(id: 102, name: 'f_102', date: DateTime.now(), price: 3000000, state: null)
+      ], 
+      oldCdps: [
+        Feature(id: 200, name: 'f_100', date: DateTime.now(), price: 2000000, state: FeatureState.Permitted),
+        Feature(id: 201, name: 'f_101', date: DateTime.now(), price: 2000000, state: FeatureState.Permitted),
+        Feature(id: 202, name: 'f_102', date: DateTime.now(), price: 3000000, state: FeatureState.Permitted),
+        Feature(id: 203, name: 'f_102', date: DateTime.now(), price: 3000000, state: FeatureState.Permitted)
+      ]
+    );
     tFeaturesSelectionInit = const [false, true, false];
     budgetsBloc.emit(OnNewCdpsSuccess(
       cdps: tCdpsInit,
       featuresSelection: tFeaturesSelectionInit,
-      canUpdate: true
+      canUpdateNewCdps: true
     ));
   });
 
   group('when all goes good', (){
-    late List<Feature> tCdpsUpdated;
+    late CdpsGroup tCdpsUpdated;
     setUp((){
-      tCdpsUpdated = [
-        Feature(id: 101, name: 'f_101', date: DateTime.now(), price: 2000000, state: null),
-        Feature(id: 102, name: 'f_102', date: DateTime.now(), price: 3000000, state: null)
-      ];
+      tCdpsUpdated = CdpsGroup(
+        newCdps: [
+          Feature(id: 101, name: 'f_101', date: DateTime.now(), price: 2000000, state: null),
+          Feature(id: 102, name: 'f_102', date: DateTime.now(), price: 3000000, state: null)
+        ], 
+        oldCdps: [
+          Feature(id: 100, name: 'f_100', date: DateTime.now(), price: 2000000, state: FeatureState.Permitted),
+          Feature(id: 200, name: 'f_100', date: DateTime.now(), price: 2000000, state: FeatureState.Permitted),
+          Feature(id: 201, name: 'f_101', date: DateTime.now(), price: 2000000, state: FeatureState.Permitted),
+          Feature(id: 202, name: 'f_102', date: DateTime.now(), price: 3000000, state: FeatureState.Permitted),
+          Feature(id: 203, name: 'f_102', date: DateTime.now(), price: 3000000, state: FeatureState.Permitted)
+        ]
+      );
       when(updateCdps(any))
           .thenAnswer((_) async => const Right(null));
       when(getCdps())
@@ -421,7 +571,7 @@ void _testUpdateCdpsGroup(){
     test('should call the specified methods', ()async{
       budgetsBloc.add(UpdateCdpsEvent());
       await untilCalled(updateCdps(any));
-      verify(updateCdps(tCdpsInit));
+      verify(updateCdps(tCdpsInit.newCdps));
       await untilCalled(getCdps());
       verify(getCdps());
     });
@@ -432,7 +582,7 @@ void _testUpdateCdpsGroup(){
         OnNewCdpsSuccess(
           cdps: tCdpsUpdated, 
           featuresSelection: const [false, false], 
-          canUpdate: false
+          canUpdateNewCdps: false
         )
       ];
       expectLater(budgetsBloc.stream, emitsInOrder(states));
@@ -456,7 +606,7 @@ void _testUpdateCdpsGroup(){
     test('should call the specified methods', ()async{
       budgetsBloc.add(UpdateCdpsEvent());
       await untilCalled(updateCdps(any));
-      verify(updateCdps(tCdpsInit));
+      verify(updateCdps(tCdpsInit.newCdps));
       verifyNever(getCdps());
     });
 
@@ -466,7 +616,7 @@ void _testUpdateCdpsGroup(){
         OnNewCdpsError(
           cdps: tCdpsInit, 
           featuresSelection: tFeaturesSelectionInit, 
-          canUpdate: true,
+          canUpdateNewCdps: true,
           message: tErrorMessage
         )
       ];
@@ -489,7 +639,7 @@ void _testUpdateCdpsGroup(){
     test('should call the specified methods', ()async{
       budgetsBloc.add(UpdateCdpsEvent());
       await untilCalled(updateCdps(any));
-      verify(updateCdps(tCdpsInit));
+      verify(updateCdps(tCdpsInit.newCdps));
       verifyNever(getCdps());
     });
 
@@ -499,7 +649,7 @@ void _testUpdateCdpsGroup(){
         OnNewCdpsError(
           cdps: tCdpsInit, 
           featuresSelection: tFeaturesSelectionInit, 
-          canUpdate: true,
+          canUpdateNewCdps: true,
           message: BudgetsBloc.generalErrorMessage
         )
       ];
@@ -507,6 +657,4 @@ void _testUpdateCdpsGroup(){
       budgetsBloc.add(UpdateCdpsEvent());
     });
   });
-
-  
 }

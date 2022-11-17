@@ -18,9 +18,10 @@ class BudgetsAdapter{
 
   CdpsGroup getCdpsGroupFromStringBody(String body){
     final jsonBody = jsonDecode(body);
+    print(jsonBody);
     final group = CdpsGroup(
-      newCdps: _getCdpsFromJsonList(jsonBody['new']), 
-      oldCdps: _getCdpsFromJsonList(jsonBody['old'])
+      newCdps: _getCdpsFromJsonList(jsonBody['data']['new'].cast<Map<String, dynamic>>()), 
+      oldCdps: _getCdpsFromJsonList(jsonBody['data']['old'].cast<Map<String, dynamic>>())
     );
     return group;
   }
@@ -53,7 +54,7 @@ class BudgetsAdapter{
       id: json['id'],
       name: json['name'],
       state: json['estado'],
-      price: json['valor'],
+      price: double.parse(json['valor'].toString()),
       date: DateTime(dateParts[0], dateParts[1], dateParts[2])
     );
   }

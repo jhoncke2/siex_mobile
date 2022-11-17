@@ -1,4 +1,5 @@
 import 'package:siex/features/budgets/domain/entities/budget.dart';
+import 'package:siex/features/budgets/domain/entities/cdps_group.dart';
 import 'package:siex/features/budgets/domain/entities/feature.dart';
 
 class BudgetsEvent{
@@ -40,4 +41,9 @@ class LoadCdpsEvent extends BudgetsEvent{
 
 class UpdateCdpsEvent extends BudgetsEvent{
 
+}
+
+class ChangeCdpsTypeEvent extends BudgetsEvent{
+  final CdpsType type;
+  ChangeCdpsTypeEvent(this.type);
 }

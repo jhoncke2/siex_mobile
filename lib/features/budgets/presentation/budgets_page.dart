@@ -49,7 +49,7 @@ class BudgetsPage extends StatelessWidget{
                 BlocBuilder<BudgetsBloc, BudgetsState>(
                   builder: (blocContext, blocState){
                     _managePostFrameMethods(blocContext, blocState);
-                    if(blocState is OnNewCdps){
+                    if(blocState is OnCdps){
                       return CdpsView();
                     }else{
                       return const CircularProgressIndicator();

@@ -48,15 +48,18 @@ class OnBudgetUpdating extends BudgetsState{
 abstract class OnCdps extends BudgetsState{
   final CdpsGroup cdps;
   final List<bool> featuresSelection;
+  final bool canUpdateNewCdps;
   OnCdps({
     required this.featuresSelection,
-    required this.cdps
+    required this.cdps,
+    required this.canUpdateNewCdps
   });
   @override
   List<Object?> get props => [
     ...super.props, 
     featuresSelection,
-    cdps
+    cdps,
+    canUpdateNewCdps
   ];
 }
 
@@ -64,25 +67,23 @@ class OnOldCdps extends OnCdps{
   OnOldCdps({
     required super.cdps,
     required super.featuresSelection,
+    required super.canUpdateNewCdps
   });
 }
 
 abstract class OnNewCdps extends OnCdps{
-  final bool canUpdate;
   OnNewCdps({
     required super.cdps,
     required super.featuresSelection,
-    required this.canUpdate
+    required super.canUpdateNewCdps
   });
-  @override
-  List<Object?> get props => [...super.props, canUpdate];
 }
 
 class OnNewCdpsSuccess extends OnNewCdps{
   OnNewCdpsSuccess({
     required super.cdps,
     required super.featuresSelection,
-    required super.canUpdate
+    required super.canUpdateNewCdps
   });
 }
 
@@ -90,8 +91,8 @@ class OnNewCdpsError extends OnNewCdps{
   final String message;
   OnNewCdpsError({
     required super.cdps,
-    required super.canUpdate,
     required super.featuresSelection,
+    required super.canUpdateNewCdps,
     required this.message
   });
   @override

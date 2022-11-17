@@ -5,9 +5,11 @@ import 'feature_state_button.dart';
 class FeatureHeader extends StatelessWidget{
   final int index;
   final Feature feature;
+  final bool enabled;
   const FeatureHeader({
     required this.index,
     required this.feature,
+    required this.enabled,
     super.key
   });
   @override
@@ -39,21 +41,24 @@ class FeatureHeader extends StatelessWidget{
             index: index,
             feature: feature,
             screenWidth: screenWidth, 
-            name: 'Aceptar'
+            name: 'Aceptar',
+            enabled: enabled,
           ),
           FeatureStateButton(
             selectionState: FeatureState.Denied,
             index: index,
             feature: feature,
             screenWidth: screenWidth, 
-            name: 'Denegar'
+            name: 'Denegar',
+            enabled: enabled,
           ),
           FeatureStateButton(
             selectionState: FeatureState.Returned,
             index: index,
             feature: feature,
             screenWidth: screenWidth, 
-            name: 'Devolver'
+            name: 'Devolver',
+            enabled: enabled,
           )
         ],
       ),

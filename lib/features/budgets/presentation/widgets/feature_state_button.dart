@@ -10,17 +10,20 @@ class FeatureStateButton extends StatelessWidget{
   final Feature feature;
   final double screenWidth;
   final String name;
+  final bool enabled;
   const FeatureStateButton({
     required this.selectionState,
     required this.index,
     required this.feature, 
     required this.screenWidth,
     required this.name,
+    required this.enabled,
     super.key  
   });
   @override
   Widget build(BuildContext context) {
-    final buttonIsLocked = feature.state == selectionState;
+    final buttonIsSelected = feature.state == selectionState;
+    final buttonIsLocked = !enabled || buttonIsSelected;
     return Column(
       children: [
         FloatingActionButton(
@@ -33,7 +36,7 @@ class FeatureStateButton extends StatelessWidget{
           },
           child: Icon(
             Icons.circle,
-            color: buttonIsLocked? Colors.lightGreen : Colors.grey,
+            color: buttonIsSelected? Colors.lightGreen : Colors.grey,
             size: screenWidth * 0.03,
           ),
         ),
