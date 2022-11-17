@@ -42,12 +42,6 @@ class LoginPage extends StatelessWidget {
                       SizedBox(
                         height: dimens.normalVerticalSpace,
                       ),
-                      Image.asset(
-                        'assets/gap_logo.png',
-                        width: dimens.getWidthPercentage(0.75),
-                        height: dimens.getHeightPercentage(0.2),
-                        fit: BoxFit.cover
-                      ),
                       ErrorPanel(
                         visible: authState is OnAuthenticationError,
                         errorTitle: 'Error de inicio',

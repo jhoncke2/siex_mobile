@@ -3,12 +3,12 @@ import 'package:http/http.dart' as http;
 import '../domain/exceptions.dart';
 
 abstract class RemoteDataSource{
-  static const baseHost = 'https://';
-  static const baseUrl = 'gapfergon.com';
+  static const baseHost = 'http://';
+  static const baseUrl = 'presupuesto.providenciaislas.com.co';
   static const baseApiUncodedPath = 'api/';
 
-  //Uri getUri(String uncodedPath)=>Uri.http(BASE_URL, uncodedPath);
-  Uri getUri(String uncodedPath)=>Uri.https(baseUrl, uncodedPath);
+  Uri getUri(String uncodedPath)=>Uri.http(baseUrl, uncodedPath);
+  //Uri getUri(String uncodedPath)=>Uri.https(baseUrl, uncodedPath);
 
   Map<String, String> createSingleAuthorizationHeaders(String accessToken){
     return {

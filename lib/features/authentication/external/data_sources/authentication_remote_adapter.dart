@@ -23,7 +23,7 @@ class AuthenticationRemoteAdapterImpl implements AuthenticationRemoteAdapter{
   @override
   int getIdFromResponse(String response) {
     final jsonResponse = jsonDecode(response);
-    return jsonResponse['data']['original']['id'];
+    return jsonResponse['data']['id'];
   }
   
 }

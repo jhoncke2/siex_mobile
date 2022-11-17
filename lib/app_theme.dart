@@ -4,13 +4,14 @@ class AppColors{
   static const primary = Color.fromARGB(255, 161, 215, 138);
   static const primaryLight = Color.fromARGB(255, 216, 247, 195);
   static const primaryDark = Color.fromARGB(255, 132, 194, 85);
-  static const secondary = Color.fromARGB(255, 226, 245, 245);
-  static const secondaryLight = Color.fromARGB(255, 233, 248, 247);
+  static const secondary = Color.fromARGB(255, 23, 110, 110);
+  static const secondaryLight = Color.fromARGB(255, 76, 173, 166);
   static const textPrimary = Colors.black;
   static const textPrimaryDark = Colors.white;
   static const textSecondary = Colors.grey;
   static const backgroundPrimary = Colors.white;
   static const backgroundSecondary = Color.fromRGBO(245, 245, 245, 1);
+  static const shadow = Color.fromRGBO(200, 200, 200, 1);
 }
 
 class AppDimens{

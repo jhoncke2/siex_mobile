@@ -31,5 +31,13 @@ class UpdateFeatureEvent extends BudgetsEvent{
 }
 
 class EndBudgetUpdating extends BudgetsEvent{
+  
+}
+
+class LoadCdpsEvent extends BudgetsEvent{
+
+}
+
+class UpdateCdpsEvent extends BudgetsEvent{
 
 }

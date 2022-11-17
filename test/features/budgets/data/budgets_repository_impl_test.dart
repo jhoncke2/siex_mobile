@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:siex/core/external/user_extra_info_getter.dart';
 import 'package:siex/features/budgets/data/budgets_remote_data_source.dart';
 import 'package:siex/features/budgets/data/budgets_repository_impl.dart';
 import 'package:siex/features/budgets/domain/entities/budget.dart';
@@ -10,14 +11,20 @@ import 'budgets_repository_impl_test.mocks.dart';
 
 late BudgetsRepositoryImpl budgetsRepository;
 late MockBudgetsRemoteDataSource remoteDataSource;
+late MockUserExtraInfoGetter userExtraInfoGetter;
 
 @GenerateMocks([
-  BudgetsRemoteDataSource
+  BudgetsRemoteDataSource,
+  UserExtraInfoGetter
 ])
 void main(){
   setUp((){
+    userExtraInfoGetter = MockUserExtraInfoGetter();
     remoteDataSource = MockBudgetsRemoteDataSource();
-    budgetsRepository = BudgetsRepositoryImpl(remoteDataSource: remoteDataSource);
+    budgetsRepository = BudgetsRepositoryImpl(
+      remoteDataSource: remoteDataSource,
+      userExtraInfoGetter: userExtraInfoGetter
+    );
   });
 
   group('get budgets', _testGetBudgetsGroup);

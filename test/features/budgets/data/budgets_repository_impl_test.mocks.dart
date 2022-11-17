@@ -2,12 +2,15 @@
 // in siex/test/features/budgets/data/budgets_repository_impl_test.dart.
 // Do not manually edit this file.
 
-import 'dart:async' as _i3;
+import 'dart:async' as _i4;
 
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:siex/core/external/user_extra_info_getter.dart' as _i7;
 import 'package:siex/features/budgets/data/budgets_remote_data_source.dart'
-    as _i2;
-import 'package:siex/features/budgets/domain/entities/budget.dart' as _i4;
+    as _i3;
+import 'package:siex/features/budgets/domain/entities/budget.dart' as _i5;
+import 'package:siex/features/budgets/domain/entities/cdps_group.dart' as _i2;
+import 'package:siex/features/budgets/domain/entities/feature.dart' as _i6;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -19,23 +22,63 @@ import 'package:siex/features/budgets/domain/entities/budget.dart' as _i4;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 
+class _FakeCdpsGroup_0 extends _i1.Fake implements _i2.CdpsGroup {}
+
 /// A class which mocks [BudgetsRemoteDataSource].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockBudgetsRemoteDataSource extends _i1.Mock
-    implements _i2.BudgetsRemoteDataSource {
+    implements _i3.BudgetsRemoteDataSource {
   MockBudgetsRemoteDataSource() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Future<List<_i4.Budget>> getBudgets() =>
+  _i4.Future<List<_i5.Budget>> getBudgets() =>
       (super.noSuchMethod(Invocation.method(#getBudgets, []),
-              returnValue: Future<List<_i4.Budget>>.value(<_i4.Budget>[]))
-          as _i3.Future<List<_i4.Budget>>);
+              returnValue: Future<List<_i5.Budget>>.value(<_i5.Budget>[]))
+          as _i4.Future<List<_i5.Budget>>);
   @override
-  _i3.Future<void> updateBudget(_i4.Budget? budget) =>
+  _i4.Future<void> updateBudget(_i5.Budget? budget) =>
       (super.noSuchMethod(Invocation.method(#updateBudget, [budget]),
           returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future<void>.value()) as _i3.Future<void>);
+          returnValueForMissingStub: Future<void>.value()) as _i4.Future<void>);
+  @override
+  _i4.Future<List<_i6.Feature>> getNewCdps(String? accessToken) =>
+      (super.noSuchMethod(Invocation.method(#getNewCdps, [accessToken]),
+              returnValue: Future<List<_i6.Feature>>.value(<_i6.Feature>[]))
+          as _i4.Future<List<_i6.Feature>>);
+  @override
+  _i4.Future<void> updateCdps(List<_i6.Feature>? cdps, String? accessToken) =>
+      (super.noSuchMethod(Invocation.method(#updateCdps, [cdps, accessToken]),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i4.Future<void>);
+  @override
+  _i4.Future<List<_i6.Feature>> getOldCdps(String? accessToken) =>
+      (super.noSuchMethod(Invocation.method(#getOldCdps, [accessToken]),
+              returnValue: Future<List<_i6.Feature>>.value(<_i6.Feature>[]))
+          as _i4.Future<List<_i6.Feature>>);
+  @override
+  _i4.Future<_i2.CdpsGroup> getCdps(String? accessToken) =>
+      (super.noSuchMethod(Invocation.method(#getCdps, [accessToken]),
+              returnValue: Future<_i2.CdpsGroup>.value(_FakeCdpsGroup_0()))
+          as _i4.Future<_i2.CdpsGroup>);
+}
+
+/// A class which mocks [UserExtraInfoGetter].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockUserExtraInfoGetter extends _i1.Mock
+    implements _i7.UserExtraInfoGetter {
+  MockUserExtraInfoGetter() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i4.Future<String> getAccessToken() =>
+      (super.noSuchMethod(Invocation.method(#getAccessToken, []),
+          returnValue: Future<String>.value('')) as _i4.Future<String>);
+  @override
+  _i4.Future<int> getId() => (super.noSuchMethod(Invocation.method(#getId, []),
+      returnValue: Future<int>.value(0)) as _i4.Future<int>);
 }

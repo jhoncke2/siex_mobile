@@ -1,5 +1,8 @@
-import 'package:siex/core/failures/failures.dart';
+import '../../../core/domain/failures.dart';
 
 class BudgetsFailure extends Failure{
-  const BudgetsFailure(super.message);
+  const BudgetsFailure({
+    required super.message,
+    required super.exception
+  });
 }

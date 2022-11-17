@@ -22,7 +22,7 @@ class PushNotificationsManagerImpl implements PushNotificationsManager{
   Future<void> initFirebase()async{
     await Firebase.initializeApp();
     await FirebaseMessaging.instance.getInitialMessage();
-    var androidInitialize = const AndroidInitializationSettings('@mipmap/launcher_icon');
+    var androidInitialize = const AndroidInitializationSettings('@mipmap/ic_launcher');
     var iOSInitialize = const IOSInitializationSettings();
     var initializationSettings = InitializationSettings(android: androidInitialize, iOS: iOSInitialize);
     localNotificationsPlugin.initialize(

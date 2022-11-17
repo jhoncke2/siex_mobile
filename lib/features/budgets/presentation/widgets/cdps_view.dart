@@ -7,15 +7,15 @@ import 'package:siex/features/budgets/presentation/bloc/budgets_state.dart';
 import 'package:siex/features/budgets/presentation/widgets/feature_body.dart';
 import 'package:siex/features/budgets/presentation/widgets/feature_header.dart';
 
-class BudgetUpdater extends StatelessWidget{
+class CdpsView extends StatelessWidget{
 
   final ScrollController _scrollController;
-  BudgetUpdater(): 
+  CdpsView(): 
     _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
-    final blocState = BlocProvider.of<BudgetsBloc>(context).state as OnBudgetUpdating;
+    final blocState = BlocProvider.of<BudgetsBloc>(context).state as OnNewCdps;
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     return SizedBox(
@@ -30,10 +30,6 @@ class BudgetUpdater extends StatelessWidget{
             ),
             decoration: BoxDecoration(
               color: Colors.white,
-              //borderRadius: BorderRadius.only(
-              //  topLeft: Radius.elliptical(screenWidth * 0.09, screenWidth * 0.12),
-              //  topRight: Radius.elliptical(screenWidth * 0.09, screenWidth * 0.12),
-              //),
               boxShadow: [
                 BoxShadow(
                   color: Colors.grey[200]!,
@@ -43,10 +39,10 @@ class BudgetUpdater extends StatelessWidget{
                 )
               ]
             ),
-            child: Center(
+            child: const Center(
               child: Text(
-                blocState.budget.name,
-                style: const TextStyle(
+                'Cdps',
+                style: TextStyle(
                   fontSize: 17
                 ),
               ),
@@ -63,8 +59,8 @@ class BudgetUpdater extends StatelessWidget{
                 child: ExpansionPanelList(
                   children: ((){
                     final List<ExpansionPanel> children = <ExpansionPanel>[];
-                    for(int index = 0; index < blocState.budget.features.length; index++){
-                      final feature = blocState.budget.features[index];
+                    for(int index = 0; index < blocState.newCdps.length; index++){
+                      final feature = blocState.newCdps[index];
                       children.add(ExpansionPanel(
                         canTapOnHeader: true,
                         headerBuilder: (_, __)=>FeatureHeader(
@@ -85,8 +81,8 @@ class BudgetUpdater extends StatelessWidget{
             ),
           ),
           TextButton(
-            onPressed: blocState.canEnd? (){
-              BlocProvider.of<BudgetsBloc>(context).add(EndBudgetUpdating());
+            onPressed: blocState.canUpdate? (){
+              BlocProvider.of<BudgetsBloc>(context).add(UpdateCdpsEvent());
             } : null,
             style: ButtonStyle(
               overlayColor: MaterialStateProperty.all(Colors.lightGreen[400]),
@@ -102,10 +98,10 @@ class BudgetUpdater extends StatelessWidget{
               )
             ),
             child: Text(
-              'Terminar',
+              'Actualizar',
               style: TextStyle(
                 fontSize: 15,
-                color: blocState.canEnd? Colors.black : Colors.grey
+                color: blocState.canUpdate? Colors.black : Colors.grey
               ),
             )
           )

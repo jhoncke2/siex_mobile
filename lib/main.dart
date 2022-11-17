@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:siex/features/budgets/presentation/budgets_page.dart';
+import 'package:siex/features/init/presentation/page/init_page.dart';
 import './injection_container.dart' as ic;
-void main() {
-  ic.init();
+import './globals.dart' as globals;
+Future<void> main()async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await ic.init();
   runApp(const MyApp());
 }
 
@@ -15,7 +17,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'vido trial',
-      home: BudgetsPage()
+      routes: globals.routes,
+      home: InitPage()
     );
   }
 }

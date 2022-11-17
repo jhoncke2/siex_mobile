@@ -24,6 +24,7 @@ class FeatureStateButton extends StatelessWidget{
     return Column(
       children: [
         FloatingActionButton(
+          heroTag: '${index}_$name',
           mini: true,
           elevation: 0,
           backgroundColor: Colors.transparent,
