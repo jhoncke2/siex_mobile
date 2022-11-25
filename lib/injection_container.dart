@@ -37,7 +37,7 @@ import 'features/init/domain/use_cases/there_is_authentication_impl.dart';
 import 'features/init/presentation/bloc/init_bloc.dart';
 import 'features/init/presentation/use_cases/there_is_authentication.dart';
 
-const useRealData = true;
+const useRealData = false;
 final sl = GetIt.instance;
 
 Future<void> init()async{

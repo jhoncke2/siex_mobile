@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:siex/features/budgets/domain/entities/budget.dart';
 import 'package:siex/features/budgets/domain/entities/cdps_group.dart';
 import 'package:siex/features/budgets/domain/entities/feature.dart';
@@ -18,7 +17,6 @@ class BudgetsAdapter{
 
   CdpsGroup getCdpsGroupFromStringBody(String body){
     final jsonBody = jsonDecode(body);
-    print(jsonBody);
     final group = CdpsGroup(
       newCdps: _getCdpsFromJsonList(jsonBody['data']['new'].cast<Map<String, dynamic>>()), 
       oldCdps: _getCdpsFromJsonList(jsonBody['data']['old'].cast<Map<String, dynamic>>())
@@ -26,7 +24,7 @@ class BudgetsAdapter{
     return group;
   }
 
-  List<Feature> _getCdpsFromJsonList(List<Map<String, dynamic>> jsonList) => (jsonList as List).map(
+  List<Feature> _getCdpsFromJsonList(List<Map<String, dynamic>> jsonList) => jsonList.map(
     (json) => _getCdpFromJson(json)
   ).toList();
 
@@ -53,11 +51,46 @@ class BudgetsAdapter{
     return Feature(
       id: json['id'],
       name: json['name'],
-      state: json['estado'],
+      state: _getFeatureStateFromStatus(json['status']),
       price: double.parse(json['valor'].toString()),
       date: DateTime(dateParts[0], dateParts[1], dateParts[2])
     );
   }
+
+  FeatureState? _getFeatureStateFromStatus(dynamic status){
+    if(status == null){
+      return null;
+    }else{
+      final statusNumber = int.parse(status as String);
+      if(statusNumber == 0){
+        return null;
+      }else if(statusNumber == 1){
+        return FeatureState.Denied;
+      }else if(statusNumber == 2){
+        return FeatureState.Returned;
+      }else{
+        return FeatureState.Permitted;
+      }
+    }
+  }
+
+ String getCdpsBodyFromCdps(List<Feature> cdps){
+    final body = {
+      'cdps': cdps.map(
+        (cdp) => [
+          cdp.id,
+          _getStatusNumberFromFeatureState(cdp.state)
+        ]
+      ).toList()
+    };
+    return jsonEncode(body);
+  }
+
+  String _getStatusNumberFromFeatureState(FeatureState? state) => 
+      (state == null)? "0" :
+      (state == FeatureState.Denied)? "1" :
+      (state == FeatureState.Returned)? "2" :
+      "3";
 
   List<Feature> getFeaturesFromMap(List<Map<String, dynamic>> jsonList) => jsonList.map(
     (json) => getFeatureFromJson(json) 

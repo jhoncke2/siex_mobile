@@ -35,12 +35,6 @@ class BudgetsRemoteDataSourceImpl extends RemoteDataSource implements BudgetsRem
   }
   
   @override
-  Future<void> updateCdps(List<Feature> cdps, String accessToken)async{
-    // TODO: implement updateCdps
-    throw UnimplementedError();
-  }
-  
-  @override
   Future<List<Feature>> getOldCdps(String accessToken)async{
     final response = await _getCdps(accessToken);
     return adapter.getNewCdpsFromStringBody(response.body, 'old');
@@ -64,5 +58,16 @@ class BudgetsRemoteDataSourceImpl extends RemoteDataSource implements BudgetsRem
       );
     });
     return adapter.getCdpsGroupFromStringBody(response.body);
+  }
+
+  @override
+  Future<void> updateCdps(List<Feature> cdps, String accessToken)async{
+    await super.executeGeneralService(()async{
+      return await client.post(
+        super.getUri('${RemoteDataSource.baseApiUncodedPath}$baseCdpsUrl/update-status'),
+        headers: super.createAuthorizationJsonHeaders(accessToken),
+        body: adapter.getCdpsBodyFromCdps(cdps)
+      );
+    });
   }
 }
