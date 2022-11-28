@@ -2,15 +2,14 @@
 // in siex/test/features/budgets/data/budgets_repository_impl_test.dart.
 // Do not manually edit this file.
 
-import 'dart:async' as _i4;
+import 'dart:async' as _i5;
+import 'dart:io' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:siex/core/external/user_extra_info_getter.dart' as _i7;
-import 'package:siex/features/budgets/data/budgets_remote_data_source.dart'
-    as _i3;
-import 'package:siex/features/budgets/domain/entities/budget.dart' as _i5;
-import 'package:siex/features/budgets/domain/entities/cdps_group.dart' as _i2;
-import 'package:siex/features/budgets/domain/entities/feature.dart' as _i6;
+import 'package:siex/features/cdps/data/cdps_remote_data_source.dart' as _i4;
+import 'package:siex/features/cdps/domain/entities/cdps_group.dart' as _i2;
+import 'package:siex/features/cdps/domain/entities/feature.dart' as _i6;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -24,45 +23,44 @@ import 'package:siex/features/budgets/domain/entities/feature.dart' as _i6;
 
 class _FakeCdpsGroup_0 extends _i1.Fake implements _i2.CdpsGroup {}
 
-/// A class which mocks [BudgetsRemoteDataSource].
+class _FakeFile_1 extends _i1.Fake implements _i3.File {}
+
+/// A class which mocks [CdpsRemoteDataSource].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockBudgetsRemoteDataSource extends _i1.Mock
-    implements _i3.BudgetsRemoteDataSource {
-  MockBudgetsRemoteDataSource() {
+class MockCdpsRemoteDataSource extends _i1.Mock
+    implements _i4.CdpsRemoteDataSource {
+  MockCdpsRemoteDataSource() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<List<_i5.Budget>> getBudgets() =>
-      (super.noSuchMethod(Invocation.method(#getBudgets, []),
-              returnValue: Future<List<_i5.Budget>>.value(<_i5.Budget>[]))
-          as _i4.Future<List<_i5.Budget>>);
-  @override
-  _i4.Future<void> updateBudget(_i5.Budget? budget) =>
-      (super.noSuchMethod(Invocation.method(#updateBudget, [budget]),
-          returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future<void>.value()) as _i4.Future<void>);
-  @override
-  _i4.Future<List<_i6.Feature>> getNewCdps(String? accessToken) =>
+  _i5.Future<List<_i6.Feature>> getNewCdps(String? accessToken) =>
       (super.noSuchMethod(Invocation.method(#getNewCdps, [accessToken]),
               returnValue: Future<List<_i6.Feature>>.value(<_i6.Feature>[]))
-          as _i4.Future<List<_i6.Feature>>);
+          as _i5.Future<List<_i6.Feature>>);
   @override
-  _i4.Future<void> updateCdps(List<_i6.Feature>? cdps, String? accessToken) =>
+  _i5.Future<void> updateCdps(List<_i6.Feature>? cdps, String? accessToken) =>
       (super.noSuchMethod(Invocation.method(#updateCdps, [cdps, accessToken]),
           returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future<void>.value()) as _i4.Future<void>);
+          returnValueForMissingStub: Future<void>.value()) as _i5.Future<void>);
   @override
-  _i4.Future<List<_i6.Feature>> getOldCdps(String? accessToken) =>
+  _i5.Future<List<_i6.Feature>> getOldCdps(String? accessToken) =>
       (super.noSuchMethod(Invocation.method(#getOldCdps, [accessToken]),
               returnValue: Future<List<_i6.Feature>>.value(<_i6.Feature>[]))
-          as _i4.Future<List<_i6.Feature>>);
+          as _i5.Future<List<_i6.Feature>>);
   @override
-  _i4.Future<_i2.CdpsGroup> getCdps(String? accessToken) =>
+  _i5.Future<_i2.CdpsGroup> getCdps(String? accessToken) =>
       (super.noSuchMethod(Invocation.method(#getCdps, [accessToken]),
               returnValue: Future<_i2.CdpsGroup>.value(_FakeCdpsGroup_0()))
-          as _i4.Future<_i2.CdpsGroup>);
+          as _i5.Future<_i2.CdpsGroup>);
+  @override
+  _i5.Future<_i3.File> getFeaturePdf(
+          _i6.Feature? feature, String? accessToken) =>
+      (super.noSuchMethod(
+              Invocation.method(#getFeaturePdf, [feature, accessToken]),
+              returnValue: Future<_i3.File>.value(_FakeFile_1()))
+          as _i5.Future<_i3.File>);
 }
 
 /// A class which mocks [UserExtraInfoGetter].
@@ -75,10 +73,10 @@ class MockUserExtraInfoGetter extends _i1.Mock
   }
 
   @override
-  _i4.Future<String> getAccessToken() =>
+  _i5.Future<String> getAccessToken() =>
       (super.noSuchMethod(Invocation.method(#getAccessToken, []),
-          returnValue: Future<String>.value('')) as _i4.Future<String>);
+          returnValue: Future<String>.value('')) as _i5.Future<String>);
   @override
-  _i4.Future<int> getId() => (super.noSuchMethod(Invocation.method(#getId, []),
-      returnValue: Future<int>.value(0)) as _i4.Future<int>);
+  _i5.Future<int> getId() => (super.noSuchMethod(Invocation.method(#getId, []),
+      returnValue: Future<int>.value(0)) as _i5.Future<int>);
 }
