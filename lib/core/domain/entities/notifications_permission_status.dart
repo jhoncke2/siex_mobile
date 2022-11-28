@@ -1,0 +1,4 @@
+enum NotificationsPermissionStatus{
+  authorized,
+  denied
+}

@@ -8,10 +8,16 @@ import 'package:dartz/dartz.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:siex/features/budgets/domain/budgets_failures.dart' as _i5;
 import 'package:siex/features/budgets/domain/entities/budget.dart' as _i6;
+import 'package:siex/features/budgets/domain/entities/cdps_group.dart' as _i9;
+import 'package:siex/features/budgets/domain/entities/feature.dart' as _i11;
 import 'package:siex/features/budgets/presentation/use_cases/get_budgets.dart'
     as _i3;
+import 'package:siex/features/budgets/presentation/use_cases/get_cdps.dart'
+    as _i8;
 import 'package:siex/features/budgets/presentation/use_cases/update_budget.dart'
     as _i7;
+import 'package:siex/features/budgets/presentation/use_cases/update_cdps.dart'
+    as _i10;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -53,6 +59,40 @@ class MockUpdateBudget extends _i1.Mock implements _i7.UpdateBudget {
   @override
   _i4.Future<_i2.Either<_i5.BudgetsFailure, void>> call(_i6.Budget? budget) =>
       (super.noSuchMethod(Invocation.method(#call, [budget]),
+              returnValue: Future<_i2.Either<_i5.BudgetsFailure, void>>.value(
+                  _FakeEither_0<_i5.BudgetsFailure, void>()))
+          as _i4.Future<_i2.Either<_i5.BudgetsFailure, void>>);
+}
+
+/// A class which mocks [GetCdps].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockGetCdps extends _i1.Mock implements _i8.GetCdps {
+  MockGetCdps() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i4.Future<_i2.Either<_i5.BudgetsFailure, _i9.CdpsGroup>> call() =>
+      (super.noSuchMethod(Invocation.method(#call, []),
+              returnValue:
+                  Future<_i2.Either<_i5.BudgetsFailure, _i9.CdpsGroup>>.value(
+                      _FakeEither_0<_i5.BudgetsFailure, _i9.CdpsGroup>()))
+          as _i4.Future<_i2.Either<_i5.BudgetsFailure, _i9.CdpsGroup>>);
+}
+
+/// A class which mocks [UpdateCdps].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockUpdateCdps extends _i1.Mock implements _i10.UpdateCdps {
+  MockUpdateCdps() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i4.Future<_i2.Either<_i5.BudgetsFailure, void>> call(
+          List<_i11.Feature>? cdps) =>
+      (super.noSuchMethod(Invocation.method(#call, [cdps]),
               returnValue: Future<_i2.Either<_i5.BudgetsFailure, void>>.value(
                   _FakeEither_0<_i5.BudgetsFailure, void>()))
           as _i4.Future<_i2.Either<_i5.BudgetsFailure, void>>);
