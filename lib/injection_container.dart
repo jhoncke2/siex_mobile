@@ -19,6 +19,7 @@ import 'package:siex/features/cdps/external/fake/cdps_remote_data_source_fake.da
 import 'package:siex/features/cdps/presentation/bloc/cdps_bloc.dart';
 import 'package:siex/features/cdps/presentation/use_cases/get_cdps.dart';
 import 'package:siex/features/cdps/presentation/use_cases/update_cdps.dart';
+import 'package:siex/features/records/presentation/use_cases/get_new_records.dart';
 import 'core/domain/use_case_error_handler.dart';
 import 'core/utils/http_responses_manager.dart';
 import 'features/authentication/data/repository/authentication_repository_impl.dart';
@@ -34,6 +35,17 @@ import 'features/cdps/domain/use_cases/update_cdps_impl.dart';
 import 'features/init/domain/use_cases/there_is_authentication_impl.dart';
 import 'features/init/presentation/bloc/init_bloc.dart';
 import 'features/init/presentation/use_cases/there_is_authentication.dart';
+import 'features/records/data/records_remote_data_source.dart';
+import 'features/records/data/records_repository_impl.dart';
+import 'features/records/domain/records_repository.dart';
+import 'features/records/domain/use_cases/get_new_records_impl.dart';
+import 'features/records/domain/use_cases/get_old_records_impl.dart';
+import 'features/records/domain/use_cases/update_records_impl.dart';
+import 'features/records/external/fake/records_remote_data_source_fake.dart';
+import 'features/records/external/records_remote_data_source_impl.dart';
+import 'features/records/presentation/bloc/records_bloc.dart';
+import 'features/records/presentation/use_cases/get_old_records.dart';
+import 'features/records/presentation/use_cases/update_records.dart';
 
 const useRealData = false;
 final sl = GetIt.instance;
@@ -63,7 +75,7 @@ Future<void> init()async{
     () => HttpResponsesManagerImpl()
   );
 
-  // Budgets
+  // Cdps
   sl.registerLazySingleton<CdpsAdapter>(
     () => CdpsAdapter()
   );
@@ -103,6 +115,45 @@ Future<void> init()async{
     () => CdpsBloc(
       getCdps: sl<GetCdps>(),
       updateCdps: sl<UpdateCdps>()      
+    )
+  );
+
+  // Records
+  sl.registerLazySingleton<RecordsRemoteDataSource>(
+    () => _implementRealOrFake<RecordsRemoteDataSource>(
+      realImpl: RecordsRemoteDataSourceImpl(),
+      fakeImpl: RecordsRemoteDataSourceFake()
+    )
+  );
+  sl.registerLazySingleton<RecordsRepository>(
+    () => RecordsRepositoryImpl(
+      remoteDataSource: sl<RecordsRemoteDataSource>(),
+      userExtraInfoGetter: sl<AuthenticationLocalDataSource>()
+    )
+  );
+  sl.registerLazySingleton<GetNewRecords>(
+    () => GetNewRecordsImpl(
+      repository: sl<RecordsRepository>(), 
+      errorHandler: sl<UseCaseErrorHandler>()
+    )
+  );
+  sl.registerLazySingleton<GetOldRecords>(
+    () => GetOldRecordsImpl(
+      repository: sl<RecordsRepository>(), 
+      errorHandler: sl<UseCaseErrorHandler>()
+    )
+  );
+  sl.registerLazySingleton<UpdateRecords>(
+    () => UpdateRecordsImpl(
+      repository: sl<RecordsRepository>(), 
+      errorHandler: sl<UseCaseErrorHandler>()
+    )
+  );
+  sl.registerFactory<RecordsBloc>(
+    () => RecordsBloc(
+      getNewRecords: sl<GetNewRecords>(),
+      getOldRecords: sl<GetOldRecords>(),
+      updateRecords: sl<UpdateRecords>()      
     )
   );
 

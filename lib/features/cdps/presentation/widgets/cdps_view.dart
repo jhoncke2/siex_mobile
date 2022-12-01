@@ -3,154 +3,71 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:siex/app_theme.dart';
 import 'package:siex/features/cdps/domain/entities/cdps_group.dart';
+import 'package:siex/features/cdps/domain/entities/cdp.dart';
 import 'package:siex/features/cdps/presentation/bloc/cdps_bloc.dart';
 import 'package:siex/features/cdps/presentation/bloc/cdps_event.dart';
 import 'package:siex/features/cdps/presentation/bloc/cdps_state.dart';
 import 'package:siex/features/cdps/presentation/widgets/feature_body.dart';
-import 'package:siex/features/cdps/presentation/widgets/feature_header.dart';
+import 'package:siex/core/presentation/widgets/time_state_items/update_items_button.dart';
+import '../../../../core/presentation/widgets/time_state_items/items_scrollable.dart';
+import '../../../../core/presentation/widgets/time_state_items/items_type_choosing_button.dart';
 
 class CdpsView extends StatelessWidget{
-
-  final ScrollController _scrollController;
-  CdpsView(): 
-    _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
     final blocState = BlocProvider.of<CdpsBloc>(context).state as OnCdps;
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
+    final dimens = AppDimens();
     return SizedBox(
-      height: screenHeight * 0.75,
+      height: dimens.getHeightPercentage(0.75),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
             children: [
-              InkWell(
-                onTap: blocState is OnOldCdps? (){
+              ItemsTypeChoosingButton(
+                isEnabled: blocState is OnOldCdps,
+                onTap: (){
                   BlocProvider.of<CdpsBloc>(context).add(ChangeCdpsTypeEvent(CdpsType.newType));
-                } : null,
-                child: Container(
-                  width: screenWidth * 0.5,
-                  padding: EdgeInsets.symmetric(
-                    vertical: screenHeight * 0.02
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey[200]!,
-                        blurRadius: 1.0,
-                        spreadRadius: 1.0,
-                        offset: Offset(0, screenHeight * 0.005)
-                      )
-                    ]
-                  ),
-                  child: Center(
-                    child: Text(
-                      'Cdps nuevos',
-                      style: TextStyle(
-                        color: blocState is OnNewCdps? Colors.grey: AppColors.textPrimary,
-                        fontSize: 17
-                      ),
-                    ),
-                  ),
-                ),
+                },
+                name: 'Cdps nuevos',
               ),
-              InkWell(
-                onTap: blocState is OnNewCdps? (){
+              ItemsTypeChoosingButton(
+                isEnabled: blocState is OnNewCdps,
+                onTap: (){
                   BlocProvider.of<CdpsBloc>(context).add(ChangeCdpsTypeEvent(CdpsType.oldType));
-                } : null,
-                child: Container(
-                  width: screenWidth * 0.5,
-                  padding: EdgeInsets.symmetric(
-                    vertical: screenHeight * 0.02
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey[200]!,
-                        blurRadius: 1.0,
-                        spreadRadius: 1.0,
-                        offset: Offset(0, screenHeight * 0.005)
-                      )
-                    ]
-                  ),
-                  child: Center(
-                    child: Text(
-                      'Cdps históricos',
-                      style: TextStyle(
-                        color: blocState is OnOldCdps? Colors.grey: AppColors.textPrimary,
-                        fontSize: 17
-                      ),
-                    ),
-                  ),
-                ),
+                },
+                name: 'Cdps históricos',
               )
             ]
           ),
-          SizedBox(
-            height: screenHeight * 0.575, 
-            child: Scrollbar(
-              thumbVisibility: true,
-              thickness: 5,
-              controller: _scrollController,
-              child: SingleChildScrollView(
-                controller: _scrollController,
-                child: ExpansionPanelList(
-                  children: ((){
-                    final List<ExpansionPanel> children = <ExpansionPanel>[];
-                    final currentCdps = (blocState is OnNewCdps)?
-                        blocState.cdps.newCdps : 
-                        blocState.cdps.oldCdps;
-                    for(int index = 0; index < currentCdps.length; index++){
-                      final feature = currentCdps[index];
-                      children.add(ExpansionPanel(
-                        canTapOnHeader: true,
-                        headerBuilder: (_, __) => FeatureHeader(
-                          index: index, 
-                          feature: feature,
-                          enabled: blocState is OnNewCdps,
-                        ), 
-                        body: FeatureBody(feature: feature),
-                        isExpanded: blocState.featuresSelection[index]
-                      ));
-                    }
-                    return children;
-                  })(),
-                  expansionCallback: (index, _){
-                    BlocProvider.of<CdpsBloc>(context).add(ChangeFeatureSelectionEvent(index: index));
-                  },
-                ),
-              ),
+          ItemsScrollable<Cdp>(
+            items: ( 
+              (blocState is OnNewCdps)?
+                blocState.cdps.newCdps : 
+                blocState.cdps.oldCdps
             ),
+            getTitleByItem: (item) => item.name,
+            getStateByItem: (item) => item.state,
+            createBodyByItem: (item) => FeatureBody(feature: item),
+            itemsSelection: blocState.featuresSelection,
+            canChangeItemState: blocState is OnNewCdps,
+            onChangeSelection: (index, _){
+              BlocProvider.of<CdpsBloc>(context).add(ChangeFeatureSelectionEvent(index: index));
+            },
+            onChangeItemState: (index, newState){
+              BlocProvider.of<CdpsBloc>(context).add(UpdateFeatureEvent(
+                index: index,
+                newState: newState
+              ));
+            },
           ),
-          ((blocState is OnNewCdps)? TextButton(
-              onPressed: blocState.canUpdateNewCdps? (){
+          ((blocState is OnNewCdps)? UpdateItemsButton(
+              isEnabled: blocState.canUpdateNewCdps,
+              onTap: (){
                 BlocProvider.of<CdpsBloc>(context).add(UpdateCdpsEvent());
-              } : null,
-              style: ButtonStyle(
-                overlayColor: MaterialStateProperty.all(Colors.lightGreen[400]),
-                padding: MaterialStateProperty.all(
-                  EdgeInsets.symmetric(
-                    horizontal: screenWidth * 0.05
-                  )
-                ),
-                shape: MaterialStateProperty.all(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18.0)
-                  )
-                )
-              ),
-              child: Text(
-                'Actualizar',
-                style: TextStyle(
-                  fontSize: 15,
-                  color: blocState.canUpdateNewCdps? Colors.black : Colors.grey
-                ),
-              )
+              },
+              name: 'Actualizar'
             ) : Container()
           )
         ],

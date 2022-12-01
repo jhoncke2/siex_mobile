@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:siex/features/cdps/domain/entities/cdps_group.dart';
-import 'package:siex/features/cdps/domain/entities/feature.dart';
+import 'package:siex/features/cdps/domain/entities/cdp.dart';
 import 'package:siex/features/cdps/presentation/bloc/cdps_event.dart';
 import 'package:siex/features/cdps/presentation/bloc/cdps_state.dart';
 import 'package:siex/features/cdps/presentation/use_cases/get_cdps.dart';
@@ -22,7 +22,7 @@ class CdpsBloc extends Bloc<CdpsEvent, CdpsState>{
       }else if(event is LoadCdpsEvent){
         await _loadCdps(emit);
       }else if(event is ChangeCdpsTypeEvent){
-        _changeCdpsType(event, emit);
+        _chooseCdpsType(event, emit);
       }else if(event is UpdateCdpsEvent){
         await _updateCdps(emit);
       }
@@ -52,7 +52,7 @@ class CdpsBloc extends Bloc<CdpsEvent, CdpsState>{
     final cdpsGroup = (state as OnNewCdps).cdps;
     final newCdps = List.of(cdpsGroup.newCdps);
     final cdp = newCdps[event.index];
-    newCdps[event.index] = Feature(
+    newCdps[event.index] = Cdp(
       id: cdp.id, 
       name: cdp.name, 
       date: cdp.date, 
@@ -84,7 +84,7 @@ class CdpsBloc extends Bloc<CdpsEvent, CdpsState>{
     });
   }
 
-  void _changeCdpsType(ChangeCdpsTypeEvent event, Emitter<CdpsState> emit)async{
+  void _chooseCdpsType(ChangeCdpsTypeEvent event, Emitter<CdpsState> emit)async{
     final onCdpsState = state as OnCdps;
     if(event.type == CdpsType.newType){
       emit(OnNewCdpsSuccess(

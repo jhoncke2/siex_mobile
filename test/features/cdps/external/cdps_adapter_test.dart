@@ -1,8 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:siex/core/domain/entities/time_state.dart';
 import 'package:siex/features/cdps/domain/entities/cdps_group.dart';
-import 'package:siex/features/cdps/domain/entities/feature.dart';
+import 'package:siex/features/cdps/domain/entities/cdp.dart';
 import 'package:siex/features/cdps/external/cdps_adapter.dart';
 
 late CdpsAdapter budgetsAdapter;
@@ -82,33 +83,33 @@ void _testGetCdpsGroupFromJsonBodyGroup(){
     tJsonBody = jsonEncode(tJson);
     tCdpsGroup = CdpsGroup(
       oldCdps: [
-        Feature(
+        Cdp(
           id: 1, 
           name: 'name1', 
-          state: FeatureState.Denied, 
+          state: TimeState.denied, 
           date: DateTime(2022, 10, 06), 
           price: 100000,
           pdfUrl: 'pdf_url'
         ),
-        Feature(
+        Cdp(
           id: 2, 
           name: 'name2', 
-          state: FeatureState.Returned, 
+          state: TimeState.returned, 
           date: DateTime(2022, 10, 06), 
           price: 200000,
           pdfUrl: 'pdf_url'
         ),
-        Feature(
+        Cdp(
           id: 3, 
           name: 'name3', 
-          state: FeatureState.Permitted, 
+          state: TimeState.permitted, 
           date: DateTime(2022, 10, 06), 
           price: 300000,
           pdfUrl: 'pdf_url'
         )
       ],
       newCdps: [
-        Feature(
+        Cdp(
           id: 4, 
           name: 'name4', 
           state: null, 
@@ -116,7 +117,7 @@ void _testGetCdpsGroupFromJsonBodyGroup(){
           price: 400000,
           pdfUrl: 'pdf_url'
         ),
-        Feature(
+        Cdp(
           id: 5, 
           name: 'name5', 
           state: null, 
@@ -132,7 +133,7 @@ void _testGetCdpsGroupFromJsonBodyGroup(){
 }
 
 void _testGetCdpsBodyFromCdpsGroup(){
-  late List<Feature> tCdps;
+  late List<Cdp> tCdps;
   late String tBody;
 
   test('should return the expected result with empty cdps list', ()async{
@@ -150,31 +151,31 @@ void _testGetCdpsBodyFromCdpsGroup(){
     const tMonth = 10;
     const tDay = 20;
     tCdps = [
-      Feature(
+      Cdp(
         id: 1,
         name: 'name_1',
-        state: FeatureState.Denied,
+        state: TimeState.denied,
         date: DateTime(tYear, tMonth, tDay),
         price: 10000,
         pdfUrl: 'pdf_url'
       ),
-      Feature(
+      Cdp(
         id: 2,
         name: 'name_2',
-        state: FeatureState.Returned,
+        state: TimeState.returned,
         date: DateTime(tYear, tMonth, tDay),
         price: 20000,
         pdfUrl: 'pdf_url'
       ),
-      Feature(
+      Cdp(
         id: 3,
         name: 'name_3',
-        state: FeatureState.Permitted,
+        state: TimeState.permitted,
         date: DateTime(tYear, tMonth, tDay),
         price: 30000,
         pdfUrl: 'pdf_url'
       ),
-      Feature(
+      Cdp(
         id: 4,
         name: 'name_4',
         state: null,
@@ -201,7 +202,7 @@ void _testGetCdpsBodyFromCdpsGroup(){
     const tMonth = 10;
     const tDay = 20;
     tCdps = [
-      Feature(
+      Cdp(
         id: 1,
         name: 'name_1',
         state: null,
@@ -209,23 +210,23 @@ void _testGetCdpsBodyFromCdpsGroup(){
         price: 10000,
         pdfUrl: 'pdf_url'
       ),
-      Feature(
+      Cdp(
         id: 2,
         name: 'name_2',
-        state: FeatureState.Denied,
+        state: TimeState.denied,
         date: DateTime(tYear, tMonth, tDay),
         price: 20000,
         pdfUrl: 'pdf_url'
       ),
-      Feature(
+      Cdp(
         id: 3,
         name: 'name_3',
-        state: FeatureState.Permitted,
+        state: TimeState.permitted,
         date: DateTime(tYear, tMonth, tDay),
         price: 30000,
         pdfUrl: 'pdf_url'
       ),
-      Feature(
+      Cdp(
         id: 4,
         name: 'name_4',
         state: null,
@@ -233,15 +234,15 @@ void _testGetCdpsBodyFromCdpsGroup(){
         price: 40000,
         pdfUrl: 'pdf_url'
       ),
-      Feature(
+      Cdp(
         id: 5,
         name: 'name_5',
-        state: FeatureState.Returned,
+        state: TimeState.returned,
         date: DateTime(tYear, tMonth, tDay),
         price: 50000,
         pdfUrl: 'pdf_url'
       ),
-      Feature(
+      Cdp(
         id: 6,
         name: 'name_6',
         state: null,
@@ -249,10 +250,10 @@ void _testGetCdpsBodyFromCdpsGroup(){
         price: 60000,
         pdfUrl: 'pdf_url'
       ),
-      Feature(
+      Cdp(
         id: 7,
         name: 'name_7',
-        state: FeatureState.Permitted,
+        state: TimeState.permitted,
         date: DateTime(tYear, tMonth, tDay),
         price: 70000,
         pdfUrl: 'pdf_url'

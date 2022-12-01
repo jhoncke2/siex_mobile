@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:siex/features/cdps/domain/entities/cdps_group.dart';
-import 'package:siex/features/cdps/domain/entities/feature.dart';
+import 'package:siex/features/cdps/domain/entities/cdp.dart';
+
+import '../../../core/domain/entities/time_state.dart';
 
 class CdpsAdapter{
 
@@ -13,31 +15,31 @@ class CdpsAdapter{
     return group;
   }
 
-  List<Feature> _getCdpsFromJsonList(List<Map<String, dynamic>> jsonList) => jsonList.map(
+  List<Cdp> _getCdpsFromJsonList(List<Map<String, dynamic>> jsonList) => jsonList.map(
     (json) => _getCdpFromJson(json)
   ).toList();
 
-  List<Feature> getOldCdpsFromStringBody(String body, String type){
+  List<Cdp> getOldCdpsFromStringBody(String body, String type){
     final jsonBody = jsonDecode(body);
     return (jsonBody['old'] as List).map(
       (json) => _getCdpFromJson(json)
     ).toList();
   }
 
-  List<Feature> getNewCdpsFromStringBody(String body, String type){
+  List<Cdp> getNewCdpsFromStringBody(String body, String type){
     final jsonBody = jsonDecode(body);
     return (jsonBody['new'] as List).map(
       (json) => _getCdpFromJson(json)
     ).toList();
   }
 
-  Feature _getCdpFromJson(Map<String, dynamic> json){
+  Cdp _getCdpFromJson(Map<String, dynamic> json){
     final dateParts = (json['fecha'] as String)
         .split('-')
         .map<int>(
           (p) => int.parse(p)
         ).toList();
-    return Feature(
+    return Cdp(
       id: json['id'],
       name: json['name'],
       state: _getFeatureStateFromStatus(json['status']),
@@ -47,7 +49,7 @@ class CdpsAdapter{
     );
   }
 
-  FeatureState? _getFeatureStateFromStatus(dynamic status){
+  TimeState? _getFeatureStateFromStatus(dynamic status){
     if(status == null){
       return null;
     }else{
@@ -55,16 +57,16 @@ class CdpsAdapter{
       if(statusNumber == 0){
         return null;
       }else if(statusNumber == 1){
-        return FeatureState.Denied;
+        return TimeState.denied;
       }else if(statusNumber == 2){
-        return FeatureState.Returned;
+        return TimeState.returned;
       }else{
-        return FeatureState.Permitted;
+        return TimeState.permitted;
       }
     }
   }
 
- String getCdpsBodyFromCdps(List<Feature> cdps){
+ String getCdpsBodyFromCdps(List<Cdp> cdps){
     final body = {
       'cdps': cdps.map(
         (cdp) => [
@@ -76,23 +78,23 @@ class CdpsAdapter{
     return jsonEncode(body);
   }
 
-  String _getStatusNumberFromFeatureState(FeatureState? state) => 
+  String _getStatusNumberFromFeatureState(TimeState? state) => 
       (state == null)? "0" :
-      (state == FeatureState.Denied)? "1" :
-      (state == FeatureState.Returned)? "2" :
+      (state == TimeState.denied)? "1" :
+      (state == TimeState.returned)? "2" :
       "3";
 
-  List<Feature> getFeaturesFromMap(List<Map<String, dynamic>> jsonList) => jsonList.map(
+  List<Cdp> getFeaturesFromMap(List<Map<String, dynamic>> jsonList) => jsonList.map(
     (json) => getFeatureFromJson(json) 
   ).toList();
   
-  Feature getFeatureFromJson(Map<String, dynamic> json){
+  Cdp getFeatureFromJson(Map<String, dynamic> json){
     final dateParts = (json['date'] as String)
         .split('-')
         .map<int>(
           (p) => int.parse(p)
         ).toList();
-    return Feature(
+    return Cdp(
       id: json['id'],
       name: json['name'],
       state: json['state'],

@@ -4,7 +4,7 @@ import 'package:siex/features/cdps/data/cdps_remote_data_source.dart';
 import 'package:siex/features/cdps/domain/cdps_failures.dart';
 import 'package:siex/features/cdps/domain/cdps_repository.dart';
 import 'package:siex/features/cdps/domain/entities/cdps_group.dart';
-import 'package:siex/features/cdps/domain/entities/feature.dart';
+import 'package:siex/features/cdps/domain/entities/cdp.dart';
 import '../../../core/domain/exceptions.dart';
 
 class CdpsRepositoryImpl implements CdpsRepository{
@@ -17,14 +17,14 @@ class CdpsRepositoryImpl implements CdpsRepository{
   });
 
   @override
-  Future<Either<CdpsFailure, List<Feature>>> getNewCdps()async{
+  Future<Either<CdpsFailure, List<Cdp>>> getNewCdps()async{
     final accessToken = await userExtraInfoGetter.getAccessToken();
     final cdps = await remoteDataSource.getNewCdps(accessToken);
     return Right(cdps);
   }
 
   @override
-  Future<Either<CdpsFailure, void>> updateCdps(List<Feature> cdps)async{
+  Future<Either<CdpsFailure, void>> updateCdps(List<Cdp> cdps)async{
     return await _manageFunctionExceptions<void>(()async{
       final accessToken = await userExtraInfoGetter.getAccessToken();
       await remoteDataSource.updateCdps(cdps, accessToken);

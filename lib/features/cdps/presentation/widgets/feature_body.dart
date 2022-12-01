@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:siex/features/cdps/domain/entities/feature.dart';
+import 'package:siex/app_theme.dart';
+import 'package:siex/features/cdps/domain/entities/cdp.dart';
 
 class FeatureBody extends StatelessWidget{
-  final Feature feature;
+  final Cdp feature;
   const FeatureBody({
     required this.feature,
     super.key
   });
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
+    final dimens = AppDimens();
     return Padding(
       padding: EdgeInsets.only(
-        left: screenWidth * 0.04,
-        right: screenWidth * 0.04,
-        top: screenHeight * 0.0075,
-        bottom: screenHeight * 0.015
+        left: dimens.getWidthPercentage(0.04),
+        right: dimens.getWidthPercentage(0.04),
+        top: dimens.getHeightPercentage(0.0075),
+        bottom: dimens.getHeightPercentage(0.015)
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

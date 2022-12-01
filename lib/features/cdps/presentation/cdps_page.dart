@@ -5,7 +5,7 @@ import 'package:siex/features/authentication/presentation/bloc/authentication_bl
 import 'package:siex/features/cdps/presentation/bloc/cdps_bloc.dart';
 import 'package:siex/features/cdps/presentation/bloc/cdps_event.dart';
 import 'package:siex/features/cdps/presentation/bloc/cdps_state.dart';
-import 'package:siex/features/cdps/presentation/widgets/appbar.dart';
+import 'package:siex/core/presentation/widgets/custom_app_bar.dart';
 import 'package:siex/features/cdps/presentation/widgets/cdps_view.dart';
 import 'package:siex/injection_container.dart';
 
@@ -29,7 +29,7 @@ class CdpsPage extends StatelessWidget{
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Appbar(),
+                CustomAppBar(),
                 Container(
                   padding: EdgeInsets.symmetric(
                     horizontal: screenWidth * 0.02,
