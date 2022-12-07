@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:siex/app_theme.dart';
 import 'package:siex/features/cdps/domain/entities/feature.dart';
+import 'package:siex/features/cdps/presentation/bloc/cdps_bloc.dart';
+import 'package:siex/features/cdps/presentation/bloc/cdps_event.dart';
 
 class FeatureBody extends StatelessWidget{
   final Feature feature;
@@ -9,14 +13,13 @@ class FeatureBody extends StatelessWidget{
   });
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
+    final dimens = AppDimens();
     return Padding(
       padding: EdgeInsets.only(
-        left: screenWidth * 0.04,
-        right: screenWidth * 0.04,
-        top: screenHeight * 0.0075,
-        bottom: screenHeight * 0.015
+        left: dimens.getWidthPercentage(0.04),
+        right: dimens.getWidthPercentage(0.04),
+        top: dimens.getHeightPercentage(0.0075),
+        bottom: dimens.getHeightPercentage(0.015)
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -27,6 +30,19 @@ class FeatureBody extends StatelessWidget{
               fontSize: 15,
               color: Colors.black
             ),
+          ),
+          Visibility(
+            visible: feature.pdfUrl.isNotEmpty,
+            child: InkWell(
+              onTap: (){
+                BlocProvider.of<CdpsBloc>(context).add(LoadCdpPdfEvent(feature));
+              },
+              child: Icon(
+                Icons.picture_as_pdf,
+                color: Colors.redAccent,
+                size: dimens.littleIconSize,
+              ),
+            )
           ),
           Text(
             '${feature.date.year}-${feature.date.month}-${feature.date.day}',

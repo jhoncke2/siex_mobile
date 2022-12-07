@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:equatable/equatable.dart';
 import 'package:siex/features/cdps/domain/entities/cdps_group.dart';
 
@@ -12,7 +14,13 @@ class OnLoadingCdps extends CdpsState{
 
 }
 
-class OnLoadingCdpsFailure extends CdpsState{
+
+abstract class OnError{
+  String get message;
+}
+
+class OnLoadingCdpsFailure extends CdpsState implements OnError{
+  @override
   final String message;
   OnLoadingCdpsFailure({
     required this.message
@@ -39,7 +47,15 @@ abstract class OnCdps extends CdpsState{
   ];
 }
 
-class OnOldCdps extends OnCdps{
+abstract class OnShowingCdps extends OnCdps{
+  OnShowingCdps({
+    required super.featuresSelection,
+    required super.cdps,
+    required super.canUpdateNewCdps
+  });
+}
+
+abstract class OnOldCdps extends OnShowingCdps{
   OnOldCdps({
     required super.cdps,
     required super.featuresSelection,
@@ -47,7 +63,28 @@ class OnOldCdps extends OnCdps{
   });
 }
 
-abstract class OnNewCdps extends OnCdps{
+class OnOldCdpsSuccess extends OnOldCdps{
+  OnOldCdpsSuccess({
+    required super.cdps,
+    required super.featuresSelection,
+    required super.canUpdateNewCdps
+  });
+}
+
+class OnOldCdpsError extends OnOldCdps implements OnError{
+  @override
+  final String message;
+  OnOldCdpsError({
+    required this.message,
+    required super.cdps,
+    required super.featuresSelection,
+    required super.canUpdateNewCdps
+  });
+  @override
+  List<Object?> get props => [...super.props, message];
+}
+
+abstract class OnNewCdps extends OnShowingCdps{
   OnNewCdps({
     required super.cdps,
     required super.featuresSelection,
@@ -63,7 +100,7 @@ class OnNewCdpsSuccess extends OnNewCdps{
   });
 }
 
-class OnNewCdpsError extends OnNewCdps{
+class OnNewCdpsError extends OnNewCdps implements OnError{
   final String message;
   OnNewCdpsError({
     required super.cdps,
@@ -73,4 +110,22 @@ class OnNewCdpsError extends OnNewCdps{
   });
   @override
   List<Object?> get props => [...super.props, message];
+}
+
+class OnCdpPdf extends OnCdps{
+  final File pdf;
+  final CdpsType cdpsType;
+  OnCdpPdf({
+    required this.pdf,
+    required this.cdpsType,
+    required super.cdps,
+    required super.featuresSelection,
+    required super.canUpdateNewCdps,
+  });
+  @override
+  List<Object?> get props => [
+    ...super.props, 
+    pdf.path,
+    cdpsType
+  ];
 }

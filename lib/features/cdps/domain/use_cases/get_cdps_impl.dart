@@ -1,7 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:siex/core/domain/use_case_error_handler.dart';
 import 'package:siex/features/cdps/domain/entities/cdps_group.dart';
-import 'package:siex/features/cdps/domain/entities/feature.dart';
 import 'package:siex/features/cdps/domain/cdps_failures.dart';
 import '../../presentation/use_cases/get_cdps.dart';
 import '../cdps_repository.dart';

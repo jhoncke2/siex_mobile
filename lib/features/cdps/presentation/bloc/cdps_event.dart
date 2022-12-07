@@ -33,3 +33,12 @@ class ChangeCdpsTypeEvent extends CdpsEvent{
   final CdpsType type;
   ChangeCdpsTypeEvent(this.type);
 }
+
+class LoadCdpPdfEvent extends CdpsEvent{
+  final Feature cdp;
+  LoadCdpPdfEvent(this.cdp);
+}
+
+class BackToCdpsEvent extends CdpsEvent{
+  
+}

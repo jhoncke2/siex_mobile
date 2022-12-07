@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -9,33 +10,41 @@ import 'package:siex/features/cdps/domain/entities/feature.dart';
 import 'package:siex/features/cdps/presentation/bloc/cdps_bloc.dart';
 import 'package:siex/features/cdps/presentation/bloc/cdps_event.dart';
 import 'package:siex/features/cdps/presentation/bloc/cdps_state.dart';
+import 'package:siex/features/cdps/presentation/use_cases/get_cdp_pdf.dart';
 import 'package:siex/features/cdps/presentation/use_cases/get_cdps.dart';
 import 'package:siex/features/cdps/presentation/use_cases/update_cdps.dart';
 import 'cdps_bloc_test.mocks.dart';
 
-late CdpsBloc budgetsBloc;
+late CdpsBloc cdpsBloc;
 late MockGetCdps getCdps;
 late MockUpdateCdps updateCdps;
+late MockGetCdpPdf getCdpPdf;
 
 @GenerateMocks([
   GetCdps,
-  UpdateCdps
+  UpdateCdps,
+  GetCdpPdf,
+  File
 ])
 void main(){
   setUp((){
+    getCdpPdf = MockGetCdpPdf();
     updateCdps = MockUpdateCdps();
     getCdps = MockGetCdps();
-    budgetsBloc = CdpsBloc(
+    cdpsBloc = CdpsBloc(
       getCdps: getCdps,
-      updateCdps: updateCdps
+      updateCdps: updateCdps,
+      getCdpPdf: getCdpPdf
     );
   });
   
   group('change feature selection', _testChangeFeatureSelectionGroup);
-  group('update feature', _testUpdateFeatureGroup);
+  group('update cdp', _testUpdateCdpGroup);
   group('load cdps', _testLoadCdpsGroup);
   group('change cdps type', _testChangeCdpsTypeGroup);
   group('update cdps', _testUpdateCdpsGroup);
+  group('load cdp pdf', _testLoadCdpPdfGroup);
+  group('back to cdps', _testBackToCdpsGroup);
 }
 
 
@@ -110,7 +119,7 @@ void _testChangeFeatureSelectionGroup(){
 
   test('shold yield the expected ordered states when the selection updated feature is the first and it is unselected and current state is newCdps', ()async{
     tSelectionInit = [false, true, false];
-    budgetsBloc.emit(OnNewCdpsSuccess(
+    cdpsBloc.emit(OnNewCdpsSuccess(
       cdps: tCdps, 
       featuresSelection: tSelectionInit, 
       canUpdateNewCdps: false
@@ -122,13 +131,13 @@ void _testChangeFeatureSelectionGroup(){
         canUpdateNewCdps: false
       )
     ];
-    expectLater(budgetsBloc.stream, emitsInOrder(expectedOrderedStates));
-    budgetsBloc.add(ChangeFeatureSelectionEvent(index: 0));
+    expectLater(cdpsBloc.stream, emitsInOrder(expectedOrderedStates));
+    cdpsBloc.add(ChangeFeatureSelectionEvent(index: 0));
   });
 
   test('shold yield the expected ordered states when the selection updated feature is the first and it is selected and current state is newCdps', ()async{
     tSelectionInit = [true, true, false];
-    budgetsBloc.emit(OnNewCdpsSuccess(
+    cdpsBloc.emit(OnNewCdpsSuccess(
       cdps: tCdps, 
       featuresSelection: tSelectionInit, 
       canUpdateNewCdps: false
@@ -140,13 +149,13 @@ void _testChangeFeatureSelectionGroup(){
         canUpdateNewCdps: false
       )
     ];
-    expectLater(budgetsBloc.stream, emitsInOrder(expectedOrderedStates));
-    budgetsBloc.add(ChangeFeatureSelectionEvent(index: 0));
+    expectLater(cdpsBloc.stream, emitsInOrder(expectedOrderedStates));
+    cdpsBloc.add(ChangeFeatureSelectionEvent(index: 0));
   });
 
   test('shold yield the expected ordered states when the selection updated feature is the second and it is selected and current state is newCdps', ()async{
     tSelectionInit = [true, true, false];
-    budgetsBloc.emit(OnNewCdpsSuccess(
+    cdpsBloc.emit(OnNewCdpsSuccess(
       cdps: tCdps, 
       featuresSelection: tSelectionInit, 
       canUpdateNewCdps: true
@@ -158,66 +167,66 @@ void _testChangeFeatureSelectionGroup(){
         canUpdateNewCdps: true
       )
     ];
-    expectLater(budgetsBloc.stream, emitsInOrder(expectedOrderedStates));
-    budgetsBloc.add(ChangeFeatureSelectionEvent(index: 1));
+    expectLater(cdpsBloc.stream, emitsInOrder(expectedOrderedStates));
+    cdpsBloc.add(ChangeFeatureSelectionEvent(index: 1));
   });
 
   test('shold yield the expected ordered states when the selection updated feature is the first and it is unselected and current state is oldCdps', ()async{
     tSelectionInit = [false, true, false, false];
-    budgetsBloc.emit(OnOldCdps(
+    cdpsBloc.emit(OnOldCdpsSuccess(
       cdps: tCdps,
       featuresSelection: tSelectionInit,
       canUpdateNewCdps: true
     ));
     final expectedOrderedStates = [
-      OnOldCdps(
+      OnOldCdpsSuccess(
         cdps: tCdps, 
         featuresSelection: const [true, true, false, false],
         canUpdateNewCdps: true
       )
     ];
-    expectLater(budgetsBloc.stream, emitsInOrder(expectedOrderedStates));
-    budgetsBloc.add(ChangeFeatureSelectionEvent(index: 0));
+    expectLater(cdpsBloc.stream, emitsInOrder(expectedOrderedStates));
+    cdpsBloc.add(ChangeFeatureSelectionEvent(index: 0));
   });
 
   test('shold yield the expected ordered states when the selection updated feature is the first and it is selected and current state is oldCdps', ()async{
     tSelectionInit = [true, true, false, false];
-    budgetsBloc.emit(OnOldCdps(
+    cdpsBloc.emit(OnOldCdpsSuccess(
       cdps: tCdps, 
       featuresSelection: tSelectionInit,
       canUpdateNewCdps: false
     ));
     final expectedOrderedStates = [
-      OnOldCdps(
+      OnOldCdpsSuccess(
         cdps: tCdps, 
         featuresSelection: const [false, true, false, false],
         canUpdateNewCdps: false
       )
     ];
-    expectLater(budgetsBloc.stream, emitsInOrder(expectedOrderedStates));
-    budgetsBloc.add(ChangeFeatureSelectionEvent(index: 0));
+    expectLater(cdpsBloc.stream, emitsInOrder(expectedOrderedStates));
+    cdpsBloc.add(ChangeFeatureSelectionEvent(index: 0));
   });
 
   test('shold yield the expected ordered states when the selection updated feature is the second and it is selected and current state is oldCdps', ()async{
     tSelectionInit = [true, true, false, false];
-    budgetsBloc.emit(OnOldCdps(
+    cdpsBloc.emit(OnOldCdpsSuccess(
       cdps: tCdps, 
       featuresSelection: tSelectionInit,
       canUpdateNewCdps: true
     ));
     final expectedOrderedStates = [
-      OnOldCdps(
+      OnOldCdpsSuccess(
         cdps: tCdps, 
         featuresSelection: const [true, false, false, false],
         canUpdateNewCdps: true
       )
     ];
-    expectLater(budgetsBloc.stream, emitsInOrder(expectedOrderedStates));
-    budgetsBloc.add(ChangeFeatureSelectionEvent(index: 1));
+    expectLater(cdpsBloc.stream, emitsInOrder(expectedOrderedStates));
+    cdpsBloc.add(ChangeFeatureSelectionEvent(index: 1));
   });
 }
 
-void _testUpdateFeatureGroup(){
+void _testUpdateCdpGroup(){
   late List<bool> tFeaturesSelection;
   late List<Feature> tNewCdpsInit;
   late List<Feature> tNewCdpsUpdated;
@@ -279,7 +288,7 @@ void _testUpdateFeatureGroup(){
     tFeaturesSelection = [false, true, false];
     tCdpsInit = CdpsGroup(newCdps: tNewCdpsInit, oldCdps: const []);
     tCdpsUpdated = CdpsGroup(newCdps: tNewCdpsUpdated, oldCdps: const []);
-    budgetsBloc.emit(OnNewCdpsSuccess(
+    cdpsBloc.emit(OnNewCdpsSuccess(
       cdps: tCdpsInit, 
       featuresSelection: tFeaturesSelection, 
       canUpdateNewCdps: false
@@ -291,8 +300,8 @@ void _testUpdateFeatureGroup(){
         canUpdateNewCdps: true
       )
     ];
-    expectLater(budgetsBloc.stream, emitsInOrder(states));
-    budgetsBloc.add(UpdateFeatureEvent(index: 0, newState: FeatureState.Permitted));
+    expectLater(cdpsBloc.stream, emitsInOrder(states));
+    cdpsBloc.add(UpdateFeatureEvent(index: 0, newState: FeatureState.Permitted));
   });
 
   test('should emit the expected ordered states when canUpdate is false and the new feature is denied', ()async{
@@ -351,7 +360,7 @@ void _testUpdateFeatureGroup(){
     tCdpsInit = CdpsGroup(newCdps: tNewCdpsInit, oldCdps: const []);
     tCdpsUpdated = CdpsGroup(newCdps: tNewCdpsUpdated, oldCdps: const []);
     tFeaturesSelection = [true, false, false];
-    budgetsBloc.emit(OnNewCdpsSuccess(
+    cdpsBloc.emit(OnNewCdpsSuccess(
       cdps: tCdpsInit, 
       featuresSelection: tFeaturesSelection, 
       canUpdateNewCdps: false
@@ -363,8 +372,8 @@ void _testUpdateFeatureGroup(){
         canUpdateNewCdps: true
       )
     ];
-    expectLater(budgetsBloc.stream, emitsInOrder(states));
-    budgetsBloc.add(UpdateFeatureEvent(index: 2, newState: FeatureState.Denied));
+    expectLater(cdpsBloc.stream, emitsInOrder(states));
+    cdpsBloc.add(UpdateFeatureEvent(index: 2, newState: FeatureState.Denied));
   });
 
   test('should emit the expected ordered states when canUpdate is false and the new feature is returned', ()async{
@@ -423,7 +432,7 @@ void _testUpdateFeatureGroup(){
     tCdpsInit = CdpsGroup(newCdps: tNewCdpsInit, oldCdps: const []);
     tCdpsUpdated = CdpsGroup(newCdps: tNewCdpsUpdated, oldCdps: const []);
     tFeaturesSelection = [true, false, false];
-    budgetsBloc.emit(OnNewCdpsSuccess(
+    cdpsBloc.emit(OnNewCdpsSuccess(
       cdps: tCdpsInit, 
       featuresSelection: tFeaturesSelection, 
       canUpdateNewCdps: false
@@ -435,8 +444,8 @@ void _testUpdateFeatureGroup(){
         canUpdateNewCdps: true
       )
     ];
-    expectLater(budgetsBloc.stream, emitsInOrder(states));
-    budgetsBloc.add(UpdateFeatureEvent(index: 2, newState: FeatureState.Returned));
+    expectLater(cdpsBloc.stream, emitsInOrder(states));
+    cdpsBloc.add(UpdateFeatureEvent(index: 2, newState: FeatureState.Returned));
   });
 }
 
@@ -510,7 +519,7 @@ void _testLoadCdpsGroup(){
   });
 
   test('should call the specified methods', ()async{
-    budgetsBloc.add(LoadCdpsEvent());
+    cdpsBloc.add(LoadCdpsEvent());
     await untilCalled(getCdps());
     verify(getCdps());
   });
@@ -524,8 +533,8 @@ void _testLoadCdpsGroup(){
         canUpdateNewCdps: false
       )
     ];
-    expectLater(budgetsBloc.stream, emitsInOrder(states));
-    budgetsBloc.add(LoadCdpsEvent());
+    expectLater(cdpsBloc.stream, emitsInOrder(states));
+    cdpsBloc.add(LoadCdpsEvent());
   });
 }
 
@@ -597,24 +606,24 @@ void _testChangeCdpsTypeGroup(){
   });
 
   test('should emit the expected ordered states when current state is newCdps', ()async{
-    budgetsBloc.emit(OnNewCdpsSuccess(
+    cdpsBloc.emit(OnNewCdpsSuccess(
       cdps: tCdps, 
       featuresSelection: const [false, true, false], 
       canUpdateNewCdps: false
     ));
     final expectedOrderedStates = [
-      OnOldCdps(
+      OnOldCdpsSuccess(
         cdps: tCdps, 
         featuresSelection: const [false, false, false, false],
         canUpdateNewCdps: false
       )
     ];
-    expectLater(budgetsBloc.stream, emitsInOrder(expectedOrderedStates));
-    budgetsBloc.add(ChangeCdpsTypeEvent(CdpsType.oldType));
+    expectLater(cdpsBloc.stream, emitsInOrder(expectedOrderedStates));
+    cdpsBloc.add(ChangeCdpsTypeEvent(CdpsType.oldType));
   });
 
   test('should emit the expected ordered states when current state is newCdps', ()async{
-    budgetsBloc.emit(OnOldCdps(
+    cdpsBloc.emit(OnOldCdpsSuccess(
       cdps: tCdps, 
       featuresSelection: const [false, true, false, true],
       canUpdateNewCdps: true
@@ -626,8 +635,8 @@ void _testChangeCdpsTypeGroup(){
         canUpdateNewCdps: true
       )
     ];
-    expectLater(budgetsBloc.stream, emitsInOrder(expectedOrderedStates));
-    budgetsBloc.add(ChangeCdpsTypeEvent(CdpsType.newType));
+    expectLater(cdpsBloc.stream, emitsInOrder(expectedOrderedStates));
+    cdpsBloc.add(ChangeCdpsTypeEvent(CdpsType.newType));
   });
 }
 
@@ -698,7 +707,7 @@ void _testUpdateCdpsGroup(){
       ]
     );
     tFeaturesSelectionInit = const [false, true, false];
-    budgetsBloc.emit(OnNewCdpsSuccess(
+    cdpsBloc.emit(OnNewCdpsSuccess(
       cdps: tCdpsInit,
       featuresSelection: tFeaturesSelectionInit,
       canUpdateNewCdps: true
@@ -777,7 +786,7 @@ void _testUpdateCdpsGroup(){
     });
 
     test('should call the specified methods', ()async{
-      budgetsBloc.add(UpdateCdpsEvent());
+      cdpsBloc.add(UpdateCdpsEvent());
       await untilCalled(updateCdps(any));
       verify(updateCdps(tCdpsInit.newCdps));
       await untilCalled(getCdps());
@@ -793,8 +802,8 @@ void _testUpdateCdpsGroup(){
           canUpdateNewCdps: false
         )
       ];
-      expectLater(budgetsBloc.stream, emitsInOrder(states));
-      budgetsBloc.add(UpdateCdpsEvent());
+      expectLater(cdpsBloc.stream, emitsInOrder(states));
+      cdpsBloc.add(UpdateCdpsEvent());
     });
   });
 
@@ -812,7 +821,7 @@ void _testUpdateCdpsGroup(){
     });
 
     test('should call the specified methods', ()async{
-      budgetsBloc.add(UpdateCdpsEvent());
+      cdpsBloc.add(UpdateCdpsEvent());
       await untilCalled(updateCdps(any));
       verify(updateCdps(tCdpsInit.newCdps));
       verifyNever(getCdps());
@@ -828,8 +837,8 @@ void _testUpdateCdpsGroup(){
           message: tErrorMessage
         )
       ];
-      expectLater(budgetsBloc.stream, emitsInOrder(states));
-      budgetsBloc.add(UpdateCdpsEvent());
+      expectLater(cdpsBloc.stream, emitsInOrder(states));
+      cdpsBloc.add(UpdateCdpsEvent());
     });
   });
 
@@ -845,7 +854,7 @@ void _testUpdateCdpsGroup(){
     });
 
     test('should call the specified methods', ()async{
-      budgetsBloc.add(UpdateCdpsEvent());
+      cdpsBloc.add(UpdateCdpsEvent());
       await untilCalled(updateCdps(any));
       verify(updateCdps(tCdpsInit.newCdps));
       verifyNever(getCdps());
@@ -861,8 +870,320 @@ void _testUpdateCdpsGroup(){
           message: CdpsBloc.generalErrorMessage
         )
       ];
-      expectLater(budgetsBloc.stream, emitsInOrder(states));
-      budgetsBloc.add(UpdateCdpsEvent());
+      expectLater(cdpsBloc.stream, emitsInOrder(states));
+      cdpsBloc.add(UpdateCdpsEvent());
     });
+  });
+}
+
+void _testLoadCdpPdfGroup(){
+  late Feature tSelectedCdp;
+  late CdpsGroup tCdps;
+  late List<bool> tFeaturesSelection;
+  late bool tCanUpdateNewCdps;
+  setUp((){
+    tCdps = CdpsGroup(
+      newCdps: [
+        Feature(
+          id: 0, 
+          name: 'cpd_0', 
+          state: FeatureState.Permitted, 
+          date: DateTime.now(),
+          price: 2000,
+          pdfUrl: 'pdf_url_0'
+        ),
+        Feature(
+          id: 1, 
+          name: 'cpd_1',
+          state: null, 
+          date: DateTime.now(),
+          price: 2000,
+          pdfUrl: 'pdf_url_1'
+        )
+      ], 
+      oldCdps: [
+        Feature(
+          id: 2, 
+          name: 'cpd_2', 
+          state: FeatureState.Denied, 
+          date: DateTime.now(),
+          price: 2000,
+          pdfUrl: 'pdf_url_2'
+        ),
+        Feature(
+          id: 3, 
+          name: 'cpd_3', 
+          state: FeatureState.Permitted, 
+          date: DateTime.now(),
+          price: 2000,
+          pdfUrl: 'pdf_url_3'
+        )
+      ]
+    );
+  });
+
+  group('when the current state is new', (){
+    setUp((){
+      tFeaturesSelection = const [false, true];
+      tCanUpdateNewCdps = false;
+      tSelectedCdp = tCdps.newCdps.first;
+      cdpsBloc.emit(OnNewCdpsSuccess(
+        cdps: tCdps,
+        featuresSelection: tFeaturesSelection,
+        canUpdateNewCdps: tCanUpdateNewCdps
+      ));
+    });
+
+    group('when all goes good', (){
+      late MockFile tPdf;
+      setUp((){
+        tPdf = MockFile();
+        when(tPdf.path).thenReturn('pdf_path');
+        when(getCdpPdf(any))
+            .thenAnswer((_) async => Right(tPdf));
+      });
+
+      test('should call the specified methods', ()async{
+        cdpsBloc.add(LoadCdpPdfEvent(tSelectedCdp));
+        await untilCalled(getCdpPdf(any));
+        verify(getCdpPdf(tSelectedCdp));
+      });
+
+      test('should emit the expected ordered states', ()async{
+        final states = [
+          OnLoadingCdps(),
+          OnCdpPdf(
+            pdf: tPdf, 
+            cdps: tCdps, 
+            featuresSelection: tFeaturesSelection, 
+            canUpdateNewCdps: tCanUpdateNewCdps,
+            cdpsType: CdpsType.newType
+          )
+        ];
+        expectLater(cdpsBloc.stream, emitsInOrder(states));
+        cdpsBloc.add(LoadCdpPdfEvent(tSelectedCdp));
+      });
+    });
+
+    test('should emit the expected ordered states when usecase returns Left Failure with error message', ()async{
+      const errorMessage = 'the_error_message';
+      when(getCdpPdf(any))
+          .thenAnswer((_) async => const Left(CdpsFailure(
+            exception: ServerException(
+              type: ServerExceptionType.NORMAL,
+              message: errorMessage
+            ),
+            message: errorMessage
+          )));
+      final states = [
+        OnLoadingCdps(),
+        OnNewCdpsError(
+          cdps: tCdps, 
+          featuresSelection: tFeaturesSelection, 
+          canUpdateNewCdps: tCanUpdateNewCdps,
+          message: errorMessage
+        )
+      ];
+      expectLater(cdpsBloc.stream, emitsInOrder(states));
+      cdpsBloc.add(LoadCdpPdfEvent(tSelectedCdp));
+    });
+    test('should emit the expected ordered states when usecase returns Left Failure withOut error message', ()async{
+      when(getCdpPdf(any))
+          .thenAnswer((_) async => const Left(CdpsFailure(
+            exception: ServerException(
+              type: ServerExceptionType.NORMAL,
+              message: ''
+            ),
+            message: ''
+          )));
+      final states = [
+        OnLoadingCdps(),
+        OnNewCdpsError(
+          cdps: tCdps, 
+          featuresSelection: tFeaturesSelection, 
+          canUpdateNewCdps: tCanUpdateNewCdps,
+          message: CdpsBloc.generalErrorMessage
+        )
+      ];
+      expectLater(cdpsBloc.stream, emitsInOrder(states));
+      cdpsBloc.add(LoadCdpPdfEvent(tSelectedCdp));
+    });
+  });
+
+  group('when the current state is old', (){
+    setUp((){
+      tFeaturesSelection = const [false, true];
+      tCanUpdateNewCdps = false;
+      tSelectedCdp = tCdps.newCdps.first;
+      cdpsBloc.emit(OnOldCdpsSuccess(
+        cdps: tCdps,
+        featuresSelection: tFeaturesSelection,
+        canUpdateNewCdps: tCanUpdateNewCdps
+      ));
+    });
+
+    group('when all goes good', (){
+      late MockFile tPdf;
+      setUp((){
+        tPdf = MockFile();
+        when(tPdf.path).thenReturn('pdf_path');
+        when(getCdpPdf(any))
+            .thenAnswer((_) async => Right(tPdf));
+      });
+
+      test('should call the specified methods', ()async{
+        cdpsBloc.add(LoadCdpPdfEvent(tSelectedCdp));
+        await untilCalled(getCdpPdf(any));
+        verify(getCdpPdf(tSelectedCdp));
+      });
+
+      test('should emit the expected ordered states', ()async{
+        final states = [
+          OnLoadingCdps(),
+          OnCdpPdf(
+            pdf: tPdf, 
+            cdps: tCdps, 
+            featuresSelection: tFeaturesSelection, 
+            canUpdateNewCdps: tCanUpdateNewCdps,
+            cdpsType: CdpsType.oldType
+          )
+        ];
+        expectLater(cdpsBloc.stream, emitsInOrder(states));
+        cdpsBloc.add(LoadCdpPdfEvent(tSelectedCdp));
+      });
+    });
+
+    test('should emit the expected ordered states when usecase returns Left Failure with error message', ()async{
+      const errorMessage = 'the_error_message';
+      when(getCdpPdf(any))
+          .thenAnswer((_) async => const Left(CdpsFailure(
+            exception: ServerException(
+              type: ServerExceptionType.NORMAL,
+              message: errorMessage
+            ),
+            message: errorMessage
+          )));
+      final states = [
+        OnLoadingCdps(),
+        OnOldCdpsError(
+          cdps: tCdps, 
+          featuresSelection: tFeaturesSelection, 
+          canUpdateNewCdps: tCanUpdateNewCdps,
+          message: errorMessage
+        )
+      ];
+      expectLater(cdpsBloc.stream, emitsInOrder(states));
+      cdpsBloc.add(LoadCdpPdfEvent(tSelectedCdp));
+    });
+    test('should emit the expected ordered states when usecase returns Left Failure withOut error message', ()async{
+      when(getCdpPdf(any))
+          .thenAnswer((_) async => const Left(CdpsFailure(
+            exception: ServerException(
+              type: ServerExceptionType.NORMAL,
+              message: ''
+            ),
+            message: ''
+          )));
+      final states = [
+        OnLoadingCdps(),
+        OnOldCdpsError(
+          cdps: tCdps, 
+          featuresSelection: tFeaturesSelection, 
+          canUpdateNewCdps: tCanUpdateNewCdps,
+          message: CdpsBloc.generalErrorMessage
+        )
+      ];
+      expectLater(cdpsBloc.stream, emitsInOrder(states));
+      cdpsBloc.add(LoadCdpPdfEvent(tSelectedCdp));
+    });
+  });
+}
+
+void _testBackToCdpsGroup(){
+  late MockFile tPdf;
+  late CdpsGroup tCdps;
+  late List<bool> tFeaturesSelection;
+  late bool tCanUpdateNewCdps;
+  setUp((){
+    tCdps = CdpsGroup(
+      newCdps: [
+        Feature(
+          id: 0, 
+          name: 'cpd_0', 
+          state: FeatureState.Permitted, 
+          date: DateTime.now(),
+          price: 2000,
+          pdfUrl: 'pdf_url_0'
+        ),
+        Feature(
+          id: 1, 
+          name: 'cpd_1',
+          state: null, 
+          date: DateTime.now(),
+          price: 2000,
+          pdfUrl: 'pdf_url_1'
+        )
+      ], 
+      oldCdps: [
+        Feature(
+          id: 2, 
+          name: 'cpd_2', 
+          state: FeatureState.Denied, 
+          date: DateTime.now(),
+          price: 2000,
+          pdfUrl: 'pdf_url_2'
+        ),
+        Feature(
+          id: 3, 
+          name: 'cpd_3', 
+          state: FeatureState.Permitted, 
+          date: DateTime.now(),
+          price: 2000,
+          pdfUrl: 'pdf_url_3'
+        )
+      ]
+    );
+    tFeaturesSelection = const [false, true];
+    tCanUpdateNewCdps = false;
+    tPdf = MockFile();
+    when(tPdf.path)
+        .thenReturn('pdf_path');
+  });
+  test('should emit the expected ordered states when the cdpsType is new', ()async{
+    cdpsBloc.emit(OnCdpPdf(
+      pdf: tPdf, 
+      cdpsType: CdpsType.newType, 
+      cdps: tCdps, 
+      featuresSelection: tFeaturesSelection, 
+      canUpdateNewCdps: tCanUpdateNewCdps
+    ));
+    final states = [
+      OnNewCdpsSuccess(
+        cdps: tCdps, 
+        featuresSelection: tFeaturesSelection, 
+        canUpdateNewCdps: tCanUpdateNewCdps
+      )
+    ];
+    expectLater(cdpsBloc.stream, emitsInOrder(states));
+    cdpsBloc.add(BackToCdpsEvent());
+  });
+
+  test('should emit the expected ordered states when the cdpsType is old', ()async{
+    cdpsBloc.emit(OnCdpPdf(
+      pdf: tPdf, 
+      cdpsType: CdpsType.oldType, 
+      cdps: tCdps, 
+      featuresSelection: tFeaturesSelection, 
+      canUpdateNewCdps: tCanUpdateNewCdps
+    ));
+    final states = [
+      OnOldCdpsSuccess(
+        cdps: tCdps, 
+        featuresSelection: tFeaturesSelection, 
+        canUpdateNewCdps: tCanUpdateNewCdps
+      )
+    ];
+    expectLater(cdpsBloc.stream, emitsInOrder(states));
+    cdpsBloc.add(BackToCdpsEvent());
   });
 }

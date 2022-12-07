@@ -17,6 +17,7 @@ import 'package:siex/features/cdps/external/cdps_adapter.dart';
 import 'package:siex/features/cdps/external/cdps_remote_data_source_impl.dart';
 import 'package:siex/features/cdps/external/fake/cdps_remote_data_source_fake.dart';
 import 'package:siex/features/cdps/presentation/bloc/cdps_bloc.dart';
+import 'package:siex/features/cdps/presentation/use_cases/get_cdp_pdf.dart';
 import 'package:siex/features/cdps/presentation/use_cases/get_cdps.dart';
 import 'package:siex/features/cdps/presentation/use_cases/update_cdps.dart';
 import 'core/domain/use_case_error_handler.dart';
@@ -29,6 +30,7 @@ import 'features/authentication/external/data_sources/authentication_remote_adap
 import 'features/authentication/presentation/bloc/authentication_bloc.dart';
 import 'features/authentication/presentation/use_cases/login.dart';
 import 'features/authentication/presentation/use_cases/logout.dart';
+import 'features/cdps/domain/use_cases/get_cdp_pdf_impl.dart';
 import 'features/cdps/domain/use_cases/get_cdps_impl.dart';
 import 'features/cdps/domain/use_cases/update_cdps_impl.dart';
 import 'features/init/domain/use_cases/there_is_authentication_impl.dart';
@@ -99,10 +101,17 @@ Future<void> init()async{
       errorHandler: sl<UseCaseErrorHandler>()
     )
   );
+  sl.registerLazySingleton<GetCdpPdf>(
+    () => GetCdpPdfImpl(
+      repository: sl<CdpsRepository>(), 
+      errorHandler: sl<UseCaseErrorHandler>()
+    )
+  );
   sl.registerFactory<CdpsBloc>(
     () => CdpsBloc(
       getCdps: sl<GetCdps>(),
-      updateCdps: sl<UpdateCdps>()      
+      updateCdps: sl<UpdateCdps>(),
+      getCdpPdf: sl<GetCdpPdf>() 
     )
   );
 

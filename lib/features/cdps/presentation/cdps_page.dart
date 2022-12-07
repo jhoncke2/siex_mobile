@@ -7,6 +7,7 @@ import 'package:siex/features/cdps/presentation/bloc/cdps_event.dart';
 import 'package:siex/features/cdps/presentation/bloc/cdps_state.dart';
 import 'package:siex/features/cdps/presentation/widgets/appbar.dart';
 import 'package:siex/features/cdps/presentation/widgets/cdps_view.dart';
+import 'package:siex/features/cdps/presentation/widgets/pdf_view.dart';
 import 'package:siex/injection_container.dart';
 
 class CdpsPage extends StatelessWidget{
@@ -49,8 +50,10 @@ class CdpsPage extends StatelessWidget{
                 BlocBuilder<CdpsBloc, CdpsState>(
                   builder: (blocContext, blocState){
                     _managePostFrameMethods(blocContext, blocState);
-                    if(blocState is OnCdps){
+                    if(blocState is OnShowingCdps){
                       return CdpsView();
+                    }else if(blocState is OnCdpPdf){
+                      return PdfView(file: blocState.pdf);
                     }else{
                       return const CircularProgressIndicator();
                     }

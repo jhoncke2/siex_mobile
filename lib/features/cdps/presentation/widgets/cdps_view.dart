@@ -17,7 +17,7 @@ class CdpsView extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    final blocState = BlocProvider.of<CdpsBloc>(context).state as OnCdps;
+    final blocState = BlocProvider.of<CdpsBloc>(context).state as OnShowingCdps;
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     return SizedBox(
@@ -28,7 +28,7 @@ class CdpsView extends StatelessWidget{
           Row(
             children: [
               InkWell(
-                onTap: blocState is OnOldCdps? (){
+                onTap: blocState is OnOldCdpsSuccess? (){
                   BlocProvider.of<CdpsBloc>(context).add(ChangeCdpsTypeEvent(CdpsType.newType));
                 } : null,
                 child: Container(
@@ -51,7 +51,7 @@ class CdpsView extends StatelessWidget{
                     child: Text(
                       'Cdps nuevos',
                       style: TextStyle(
-                        color: blocState is OnNewCdps? Colors.grey: AppColors.textPrimary,
+                        color: blocState is OnNewCdps? AppColors.secondary: AppColors.textPrimary,
                         fontSize: 17
                       ),
                     ),
@@ -82,7 +82,7 @@ class CdpsView extends StatelessWidget{
                     child: Text(
                       'Cdps históricos',
                       style: TextStyle(
-                        color: blocState is OnOldCdps? Colors.grey: AppColors.textPrimary,
+                        color: blocState is OnOldCdpsSuccess? AppColors.secondary: AppColors.textPrimary,
                         fontSize: 17
                       ),
                     ),

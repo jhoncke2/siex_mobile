@@ -17,8 +17,8 @@ class CdpsRemoteDataSourceFake implements CdpsRemoteDataSource{
     Feature(id: 104, name: '2.1.2.005', state: null, date: DateTime.now(), price: 2000000, pdfUrl: _examplePdfUrl),
     Feature(id: 105, name: '2.1.2.006', state: null, date: DateTime.now(), price: 2000000, pdfUrl: _examplePdfUrl),
     Feature(id: 106, name: '2.1.2.007', state: null, date: DateTime.now(), price: 2000000, pdfUrl: _examplePdfUrl),
-    Feature(id: 107, name: '2.1.2.008', state: null, date: DateTime.now(), price: 2000000, pdfUrl: _examplePdfUrl),
-    Feature(id: 108, name: '2.1.2.009', state: null, date: DateTime.now(), price: 2000000, pdfUrl: _examplePdfUrl)
+    Feature(id: 107, name: '2.1.2.008', state: null, date: DateTime.now(), price: 2000000, pdfUrl: ''),
+    Feature(id: 108, name: '2.1.2.009', state: null, date: DateTime.now(), price: 2000000, pdfUrl: '')
   ];
   final List<Feature> oldCdps = [
     Feature(id: 1000, name: '2.1.2.010', state: FeatureState.Permitted, date: DateTime.now(), price: 2000000, pdfUrl: _examplePdfUrl),
@@ -37,8 +37,8 @@ class CdpsRemoteDataSourceFake implements CdpsRemoteDataSource{
     Feature(id: 1013, name: '2.1.2.140', state: null, date: DateTime.now(), price: 2000000, pdfUrl: _examplePdfUrl),
     Feature(id: 1014, name: '2.1.2.150', state: FeatureState.Permitted, date: DateTime.now(), price: 2000000, pdfUrl: _examplePdfUrl),
     Feature(id: 1015, name: '2.1.2.160', state: FeatureState.Denied, date: DateTime.now(), price: 2000000, pdfUrl: _examplePdfUrl),
-    Feature(id: 1016, name: '2.1.2.170', state: FeatureState.Returned, date: DateTime.now(), price: 2000000, pdfUrl: _examplePdfUrl),
-    Feature(id: 1017, name: '2.1.2.180', state: FeatureState.Permitted, date: DateTime.now(), price: 2000000, pdfUrl: _examplePdfUrl)
+    Feature(id: 1016, name: '2.1.2.170', state: FeatureState.Returned, date: DateTime.now(), price: 2000000, pdfUrl: ''),
+    Feature(id: 1017, name: '2.1.2.180', state: FeatureState.Permitted, date: DateTime.now(), price: 2000000, pdfUrl: '')
   ];
   
   final PathProvider pathProvider;

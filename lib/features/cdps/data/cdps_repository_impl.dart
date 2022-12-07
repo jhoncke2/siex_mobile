@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:siex/core/external/user_extra_info_getter.dart';
 import 'package:siex/features/cdps/data/cdps_remote_data_source.dart';
@@ -59,5 +60,14 @@ class CdpsRepositoryImpl implements CdpsRepository{
         exception: AppException('')
       ));
     }
+  }
+
+  @override
+  Future<Either<CdpsFailure, File>> getCdpPdf(Feature cdp)async{
+    return await _manageFunctionExceptions(()async{
+      final accessToken = await userExtraInfoGetter.getAccessToken();
+      final file = await remoteDataSource.getFeaturePdf(cdp, accessToken);
+      return Right(file);
+    });
   }
 }

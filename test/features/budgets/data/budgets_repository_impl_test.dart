@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -17,7 +19,8 @@ late MockUserExtraInfoGetter userExtraInfoGetter;
 
 @GenerateMocks([
   CdpsRemoteDataSource,
-  UserExtraInfoGetter
+  UserExtraInfoGetter,
+  File
 ])
 void main(){
   setUp((){
@@ -31,6 +34,7 @@ void main(){
 
   group('get cdps', _testGetCdpsGroup);
   group('update cdps', _testUpdateCdpsGroup);
+  group('get cdp pdf', _testGetCdpPdfGroup);
 }
 
 void _testGetCdpsGroup(){
@@ -221,4 +225,65 @@ void _testUpdateCdpsGroup(){
       exception: AppException('')
     )));
   });
+}
+
+void _testGetCdpPdfGroup(){
+  late String tAccessToken;
+  late Feature tCdp;
+  
+  setUp((){
+    tAccessToken = 'access_token';
+    tCdp = Feature(
+      id: 0,
+      name: 'user name',
+      price: 20000,
+      state: FeatureState.Denied,
+      pdfUrl: 'pdf_url',
+      date: DateTime.now()
+    );
+    when(userExtraInfoGetter.getAccessToken())
+        .thenAnswer((_) async => tAccessToken);
+  });
+  group('when all goes good', (){
+    late MockFile tFile;
+    setUp((){
+      tFile = MockFile();
+      when(tFile.path).thenReturn(tCdp.pdfUrl);
+      when(remoteDataSource.getFeaturePdf(tCdp, tAccessToken))
+          .thenAnswer((_) async => tFile);
+    });
+
+    test('should call the specified methods', ()async{
+      await budgetsRepository.getCdpPdf(tCdp);
+      verify(userExtraInfoGetter.getAccessToken());
+      verify(remoteDataSource.getFeaturePdf(tCdp, tAccessToken));
+    });
+
+    test('should return the expected result', ()async{
+      final result = await budgetsRepository.getCdpPdf(tCdp);
+      expect(result, Right(tFile));
+    });
+  });
+
+  test('should return the expected result when there is an AppException', ()async{
+    const errorMessage = 'err_msg';
+    when(remoteDataSource.getFeaturePdf(any, any))
+        .thenThrow(const ServerException(type: ServerExceptionType.NORMAL, message: errorMessage));
+    final result = await budgetsRepository.getCdpPdf(tCdp);
+    expect(result, const Left(CdpsFailure(
+      exception: ServerException(type: ServerExceptionType.NORMAL, message: errorMessage),
+      message: errorMessage
+    )));
+  });
+
+  test('should return the expected result when there is another Exception', ()async{
+    when(remoteDataSource.getFeaturePdf(any, any))
+        .thenThrow(Exception());
+    final result = await budgetsRepository.getCdpPdf(tCdp);
+    expect(result, const Left(CdpsFailure(
+      exception: AppException(''),
+      message: ''
+    )));
+  });
+
 }
