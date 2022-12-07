@@ -21,7 +21,7 @@ class CdpsView extends StatelessWidget{
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     return SizedBox(
-      height: screenHeight * 0.75,
+      height: screenHeight * (blocState is OnError? 0.71 : 0.75),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

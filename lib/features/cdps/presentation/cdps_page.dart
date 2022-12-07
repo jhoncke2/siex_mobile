@@ -1,6 +1,7 @@
 // ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:siex/core/presentation/widgets/error_panel.dart';
 import 'package:siex/features/authentication/presentation/bloc/authentication_bloc.dart';
 import 'package:siex/features/cdps/presentation/bloc/cdps_bloc.dart';
 import 'package:siex/features/cdps/presentation/bloc/cdps_event.dart';
@@ -50,13 +51,26 @@ class CdpsPage extends StatelessWidget{
                 BlocBuilder<CdpsBloc, CdpsState>(
                   builder: (blocContext, blocState){
                     _managePostFrameMethods(blocContext, blocState);
-                    if(blocState is OnShowingCdps){
-                      return CdpsView();
-                    }else if(blocState is OnCdpPdf){
-                      return PdfView(file: blocState.pdf);
-                    }else{
-                      return const CircularProgressIndicator();
-                    }
+                    return Column(
+                      children: [
+                        (
+                          (blocState is OnShowingCdps)?
+                            CdpsView():
+                            (blocState is OnCdpPdf)?
+                              PdfView(file: blocState.pdf):
+                              const CircularProgressIndicator()
+                        ),
+                        (
+                          (blocState is OnError)?
+                            ErrorPanel(
+                              visible: true, 
+                              errorTitle: 'Ha ocurrido un error', 
+                              errorContent: (blocState as OnError).message
+                            ):
+                            Container()
+                        )
+                      ],
+                    );
                   }
                 ),
                 Container()

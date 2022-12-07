@@ -73,10 +73,11 @@ class CdpsRemoteDataSourceImpl extends RemoteDataSource implements CdpsRemoteDat
       Completer<File> completer = Completer();
       final url = feature.pdfUrl
           .replaceAll(RegExp('https://'), '')
+          .replaceAll(RegExp('http://'), '')
           .replaceAll('\\', '');
       final urlParts = url.split('/');
       var httpRequest = await HttpClient().getUrl(
-        Uri.https(urlParts[0], urlParts.sublist(1, urlParts.length).join('/'))
+        Uri.http(urlParts[0], urlParts.sublist(1, urlParts.length).join('/'))
       );
       httpRequest.headers.set('Authorization', 'Bearer $accessToken');
       final dirPath = await pathProvider.generatePath();
