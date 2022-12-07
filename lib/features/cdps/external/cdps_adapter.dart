@@ -43,7 +43,7 @@ class CdpsAdapter{
       state: _getFeatureStateFromStatus(json['status']),
       price: double.parse(json['valor'].toString()),
       date: DateTime(dateParts[0], dateParts[1], dateParts[2]),
-      pdfUrl: json['pdf_url']
+      pdfUrl: json['pdf']??''
     );
   }
 

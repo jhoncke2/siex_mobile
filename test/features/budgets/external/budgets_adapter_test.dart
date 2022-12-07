@@ -45,14 +45,16 @@ void _testGetCdpsGroupFromJsonBodyGroup(){
               "valor": 100000,
               "fecha": "2022-10-06",
               "id": 1,
-              "status": "1"
+              "status": "1",
+              'pdf': 'old_pdf_url_1'
           },
           {
               "name": "name2",
               "valor": 200000,
               "fecha": "2022-10-06",
               "id": 2,
-              "status": "2"
+              "status": "2",
+              'pdf': 'old_pdf_url_2'
           },
           {
               "name": "name3",
@@ -68,7 +70,8 @@ void _testGetCdpsGroupFromJsonBodyGroup(){
               "valor": 400000,
               "fecha": "2022-10-06",
               "id": 4,
-              "status": "0"
+              "status": "0",
+              'pdf': 'new_pdf_url_1'
           },
           {
               "name": "name5",
@@ -88,7 +91,7 @@ void _testGetCdpsGroupFromJsonBodyGroup(){
           state: FeatureState.Denied, 
           date: DateTime(2022, 10, 06), 
           price: 100000,
-          pdfUrl: 'pdf_url'
+          pdfUrl: 'old_pdf_url_1'
         ),
         Feature(
           id: 2, 
@@ -96,7 +99,7 @@ void _testGetCdpsGroupFromJsonBodyGroup(){
           state: FeatureState.Returned, 
           date: DateTime(2022, 10, 06), 
           price: 200000,
-          pdfUrl: 'pdf_url'
+          pdfUrl: 'old_pdf_url_2'
         ),
         Feature(
           id: 3, 
@@ -104,7 +107,7 @@ void _testGetCdpsGroupFromJsonBodyGroup(){
           state: FeatureState.Permitted, 
           date: DateTime(2022, 10, 06), 
           price: 300000,
-          pdfUrl: 'pdf_url'
+          pdfUrl: ''
         )
       ],
       newCdps: [
@@ -114,7 +117,7 @@ void _testGetCdpsGroupFromJsonBodyGroup(){
           state: null, 
           date: DateTime(2022, 10, 06), 
           price: 400000,
-          pdfUrl: 'pdf_url'
+          pdfUrl: 'new_pdf_url_1'
         ),
         Feature(
           id: 5, 
@@ -122,7 +125,7 @@ void _testGetCdpsGroupFromJsonBodyGroup(){
           state: null, 
           date: DateTime(2022, 10, 06), 
           price: 500000,
-          pdfUrl: 'pdf_url'
+          pdfUrl: ''
         )
       ]
     );
@@ -156,7 +159,7 @@ void _testGetCdpsBodyFromCdpsGroup(){
         state: FeatureState.Denied,
         date: DateTime(tYear, tMonth, tDay),
         price: 10000,
-        pdfUrl: 'pdf_url'
+        pdfUrl: 'pdf_url_1'
       ),
       Feature(
         id: 2,
@@ -164,7 +167,7 @@ void _testGetCdpsBodyFromCdpsGroup(){
         state: FeatureState.Returned,
         date: DateTime(tYear, tMonth, tDay),
         price: 20000,
-        pdfUrl: 'pdf_url'
+        pdfUrl: 'pdf_url_2'
       ),
       Feature(
         id: 3,
@@ -172,7 +175,7 @@ void _testGetCdpsBodyFromCdpsGroup(){
         state: FeatureState.Permitted,
         date: DateTime(tYear, tMonth, tDay),
         price: 30000,
-        pdfUrl: 'pdf_url'
+        pdfUrl: 'pdf_url_3'
       ),
       Feature(
         id: 4,
@@ -180,7 +183,7 @@ void _testGetCdpsBodyFromCdpsGroup(){
         state: null,
         date: DateTime(tYear, tMonth, tDay),
         price: 40000,
-        pdfUrl: 'pdf_url'
+        pdfUrl: ''
       )
     ];
     const tJsonBody = {
