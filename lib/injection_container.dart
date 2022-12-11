@@ -49,7 +49,7 @@ import 'features/records/presentation/bloc/records_bloc.dart';
 import 'features/records/presentation/use_cases/get_old_records.dart';
 import 'features/records/presentation/use_cases/update_records.dart';
 
-const useRealData = false;
+const useRealData = true;
 final sl = GetIt.instance;
 
 Future<void> init()async{
