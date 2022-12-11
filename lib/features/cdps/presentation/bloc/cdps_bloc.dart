@@ -76,7 +76,7 @@ class CdpsBloc extends Bloc<CdpsEvent, CdpsState>{
   }
 
   Future<void> _loadCdps(Emitter<CdpsState> emit)async{
-    emit(OnLoadingCdps());
+    emit(OnLoadingOnCdps());
     final result = await getCdps();
     result.fold((failure){
 
@@ -114,7 +114,7 @@ class CdpsBloc extends Bloc<CdpsEvent, CdpsState>{
 
   Future<void> _updateCdps(Emitter<CdpsState> emit)async{
     final onCdpsState = (state as OnNewCdps);
-    emit(OnLoadingCdps());
+    emit(OnLoadingOnCdps());
     final updateResult = await updateCdps(onCdpsState.cdps.newCdps);
     await updateResult.fold((failure)async{
       final message = (failure.message.isNotEmpty)? failure.message : generalErrorMessage;
@@ -151,7 +151,7 @@ class CdpsBloc extends Bloc<CdpsEvent, CdpsState>{
     final featuresSelection = (state as OnShowingCdps).featuresSelection;
     final canUpdateNewCdps = (state as OnShowingCdps).canUpdateNewCdps;
     final cdpsType = (state is OnNewCdps)? CdpsType.newType : CdpsType.oldType;
-    emit(OnLoadingCdps());
+    emit(OnLoadingOnCdps());
     final pdfResult = await getCdpPdf(event.cdp);
     pdfResult.fold((failure){
       final message = (failure.message.isNotEmpty)? failure.message : generalErrorMessage;

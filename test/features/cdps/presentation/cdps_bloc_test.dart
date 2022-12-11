@@ -527,7 +527,7 @@ void _testLoadCdpsGroup(){
 
   test('should emit the expected ordered states', ()async{
     final states = [
-      OnLoadingCdps(),
+      OnLoadingOnCdps(),
       OnNewCdpsSuccess(
         cdps: tCdps, 
         featuresSelection: const [false, false, false],
@@ -796,7 +796,7 @@ void _testUpdateCdpsGroup(){
 
     test('should emit the expected ordered states', ()async{
       final states = [
-        OnLoadingCdps(),
+        OnLoadingOnCdps(),
         OnNewCdpsSuccess(
           cdps: tCdpsUpdated, 
           featuresSelection: const [false, false], 
@@ -830,7 +830,7 @@ void _testUpdateCdpsGroup(){
 
     test('should emit the expected ordered states', ()async{
       final states = [
-        OnLoadingCdps(),
+        OnLoadingOnCdps(),
         OnNewCdpsError(
           cdps: tCdpsInit, 
           featuresSelection: tFeaturesSelectionInit, 
@@ -863,7 +863,7 @@ void _testUpdateCdpsGroup(){
 
     test('should emit the expected ordered states', ()async{
       final states = [
-        OnLoadingCdps(),
+        OnLoadingOnCdps(),
         OnNewCdpsError(
           cdps: tCdpsInit, 
           featuresSelection: tFeaturesSelectionInit, 
@@ -952,7 +952,7 @@ void _testLoadCdpPdfGroup(){
 
       test('should emit the expected ordered states', ()async{
         final states = [
-          OnLoadingCdps(),
+          OnLoadingOnCdps(),
           OnCdpPdf(
             pdf: tPdf, 
             cdps: tCdps, 
@@ -977,7 +977,7 @@ void _testLoadCdpPdfGroup(){
             message: errorMessage
           )));
       final states = [
-        OnLoadingCdps(),
+        OnLoadingOnCdps(),
         OnNewCdpsError(
           cdps: tCdps, 
           featuresSelection: tFeaturesSelection, 
@@ -998,7 +998,7 @@ void _testLoadCdpPdfGroup(){
             message: ''
           )));
       final states = [
-        OnLoadingCdps(),
+        OnLoadingOnCdps(),
         OnNewCdpsError(
           cdps: tCdps, 
           featuresSelection: tFeaturesSelection, 
@@ -1040,7 +1040,7 @@ void _testLoadCdpPdfGroup(){
 
       test('should emit the expected ordered states', ()async{
         final states = [
-          OnLoadingCdps(),
+          OnLoadingOnCdps(),
           OnCdpPdf(
             pdf: tPdf, 
             cdps: tCdps, 
@@ -1065,7 +1065,7 @@ void _testLoadCdpPdfGroup(){
             message: errorMessage
           )));
       final states = [
-        OnLoadingCdps(),
+        OnLoadingOnCdps(),
         OnOldCdpsError(
           cdps: tCdps, 
           featuresSelection: tFeaturesSelection, 
@@ -1086,7 +1086,7 @@ void _testLoadCdpPdfGroup(){
             message: ''
           )));
       final states = [
-        OnLoadingCdps(),
+        OnLoadingOnCdps(),
         OnOldCdpsError(
           cdps: tCdps, 
           featuresSelection: tFeaturesSelection, 
