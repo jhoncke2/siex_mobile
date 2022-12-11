@@ -63,14 +63,6 @@ abstract class OnOldCdps extends OnShowingCdps{
   });
 }
 
-class OnLoadingOldCdps extends OnOldCdps{
-  OnLoadingOldCdps({
-    required super.cdps,
-    required super.featuresSelection,
-    required super.canUpdateNewCdps
-  });
-}
-
 class OnOldCdpsSuccess extends OnOldCdps{
   OnOldCdpsSuccess({
     required super.cdps,
@@ -94,14 +86,6 @@ class OnOldCdpsError extends OnOldCdps implements OnError{
 
 abstract class OnNewCdps extends OnShowingCdps{
   OnNewCdps({
-    required super.cdps,
-    required super.featuresSelection,
-    required super.canUpdateNewCdps
-  });
-}
-
-class OnLoadingNewCdps extends OnNewCdps{
-  OnLoadingNewCdps({
     required super.cdps,
     required super.featuresSelection,
     required super.canUpdateNewCdps

@@ -41,26 +41,31 @@ class CdpsView extends StatelessWidget{
               )
             ]
           ),
-          ItemsScrollable<Cdp>(
-            items: ( 
-              (blocState is OnNewCdps)?
-                blocState.cdps.newCdps : 
-                blocState.cdps.oldCdps
+          RefreshIndicator(
+            onRefresh: ()async{
+              BlocProvider.of<CdpsBloc>(context).add(LoadCdpsEvent());
+            },
+            child: ItemsScrollable<Cdp>(
+              items: ( 
+                (blocState is OnNewCdps)?
+                  blocState.cdps.newCdps : 
+                  blocState.cdps.oldCdps
+              ),
+              getTitleByItem: (item) => item.name,
+              getStateByItem: (item) => item.state,
+              createBodyByItem: (item) => CdpBody(feature: item),
+              itemsSelection: blocState.featuresSelection,
+              canChangeItemState: blocState is OnNewCdps,
+              onChangeSelection: (index, _){
+                BlocProvider.of<CdpsBloc>(context).add(ChangeCdpSelectionEvent(index: index));
+              },
+              onChangeItemState: (index, newState){
+                BlocProvider.of<CdpsBloc>(context).add(UpdateSingleCdpEvent(
+                  index: index,
+                  newState: newState
+                ));
+              },
             ),
-            getTitleByItem: (item) => item.name,
-            getStateByItem: (item) => item.state,
-            createBodyByItem: (item) => CdpBody(feature: item),
-            itemsSelection: blocState.featuresSelection,
-            canChangeItemState: blocState is OnNewCdps,
-            onChangeSelection: (index, _){
-              BlocProvider.of<CdpsBloc>(context).add(ChangeFeatureSelectionEvent(index: index));
-            },
-            onChangeItemState: (index, newState){
-              BlocProvider.of<CdpsBloc>(context).add(UpdateFeatureEvent(
-                index: index,
-                newState: newState
-              ));
-            },
           ),
           ((blocState is OnNewCdps)? UpdateItemsButton(
               isEnabled: blocState.canUpdateNewCdps,

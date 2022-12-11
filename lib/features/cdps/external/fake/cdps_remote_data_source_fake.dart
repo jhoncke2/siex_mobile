@@ -70,6 +70,9 @@ class CdpsRemoteDataSourceFake implements CdpsRemoteDataSource{
 
   @override
   Future<CdpsGroup> getCdps(String accessToken)async{
+    await Future.delayed(const Duration(
+      milliseconds: 750
+    ));
     return CdpsGroup(
       newCdps: newCdps, 
       oldCdps: oldCdps

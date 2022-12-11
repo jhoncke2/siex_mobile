@@ -18,10 +18,10 @@ class CdpsBloc extends Bloc<CdpsEvent, CdpsState>{
     required this.getCdpPdf
   }) : super(OnCdpsInit()){
     on<CdpsEvent>((event, emit)async{
-      if(event is ChangeFeatureSelectionEvent){
-        _changeFeatureSelection(event, emit);
-      }else if(event is UpdateFeatureEvent){
-        await _updateFeature(event, emit);
+      if(event is ChangeCdpSelectionEvent){
+        _changeCdpSelection(event, emit);
+      }else if(event is UpdateSingleCdpEvent){
+        await _updateSingleCdp(event, emit);
       }else if(event is LoadCdpsEvent){
         await _loadCdps(emit);
       }else if(event is ChangeCdpsTypeEvent){
@@ -36,7 +36,7 @@ class CdpsBloc extends Bloc<CdpsEvent, CdpsState>{
     });
   }
 
-  void _changeFeatureSelection(ChangeFeatureSelectionEvent event, Emitter<CdpsState> emit){
+  void _changeCdpSelection(ChangeCdpSelectionEvent event, Emitter<CdpsState> emit){
     final onCdpsState = (state as OnShowingCdps);
     final newSelection = List<bool>.from(onCdpsState.featuresSelection);
     newSelection[event.index] = !newSelection[event.index];
@@ -55,7 +55,7 @@ class CdpsBloc extends Bloc<CdpsEvent, CdpsState>{
     }
   }
 
-  Future<void> _updateFeature(UpdateFeatureEvent event, Emitter<CdpsState> emit)async{
+  Future<void> _updateSingleCdp(UpdateSingleCdpEvent event, Emitter<CdpsState> emit)async{
     final cdpsGroup = (state as OnNewCdps).cdps;
     final newCdps = List.of(cdpsGroup.newCdps);
     final cdp = newCdps[event.index];
@@ -76,20 +76,58 @@ class CdpsBloc extends Bloc<CdpsEvent, CdpsState>{
   }
 
   Future<void> _loadCdps(Emitter<CdpsState> emit)async{
+    final currentState = state;
     emit(OnLoadingOnCdps());
     final result = await getCdps();
     result.fold((failure){
-
+      _manageLoadCdpsError(emit, currentState, failure.message);
     }, (cdps){
-      emit(OnNewCdpsSuccess(
-        cdps: cdps, 
-        canUpdateNewCdps: false,
-        featuresSelection: cdps.newCdps.map<bool>(
-          (_) => false
-        ).toList()
-      ));
+      if(currentState is OnOldCdps){
+        emit(OnOldCdpsSuccess(
+          cdps: cdps, 
+          featuresSelection: _getNewFeaturesSelectionFromCdps(cdps.oldCdps), 
+          canUpdateNewCdps: false
+        ));
+      }else{
+        emit(OnNewCdpsSuccess(
+          cdps: cdps, 
+          canUpdateNewCdps: false,
+          featuresSelection: _getNewFeaturesSelectionFromCdps(cdps.newCdps)
+        ));
+      }
     });
   }
+
+  void _manageLoadCdpsError(Emitter<CdpsState> emit, CdpsState currentState, String errorMessage){
+    final message = (errorMessage.isNotEmpty)? errorMessage : generalErrorMessage;
+    if(currentState is OnCdpsInit){
+      emit(OnLoadingCdpsFailure(
+        message: message
+      ));
+    }else{
+      final onCdpsState = currentState as OnCdps;
+      if(onCdpsState is OnNewCdps){
+        emit(OnNewCdpsError(
+          cdps: onCdpsState.cdps, 
+          featuresSelection: onCdpsState.featuresSelection, 
+          canUpdateNewCdps: onCdpsState.canUpdateNewCdps, 
+          message: message
+        ));
+      }else{
+        emit(OnOldCdpsError(
+          cdps: onCdpsState.cdps, 
+          featuresSelection: onCdpsState.featuresSelection, 
+          canUpdateNewCdps: onCdpsState.canUpdateNewCdps, 
+          message: message
+        ));
+      }
+    }
+  }
+
+  List<bool> _getNewFeaturesSelectionFromCdps(List<Cdp> cdps) =>
+      cdps.map<bool>(
+        (_) => false
+      ).toList();
 
   void _chooseCdpsType(ChangeCdpsTypeEvent event, Emitter<CdpsState> emit)async{
     final onCdpsState = state as OnCdps;

@@ -7,17 +7,17 @@ class CdpsEvent{
 
 }
 
-class ChangeFeatureSelectionEvent extends CdpsEvent{
+class ChangeCdpSelectionEvent extends CdpsEvent{
   final int index;
-  ChangeFeatureSelectionEvent({
+  ChangeCdpSelectionEvent({
     required this.index
   });
 }
 
-class UpdateFeatureEvent extends CdpsEvent{
+class UpdateSingleCdpEvent extends CdpsEvent{
   final int index;
   final TimeState newState;
-  UpdateFeatureEvent({
+  UpdateSingleCdpEvent({
     required this.index, 
     required this.newState
   });
