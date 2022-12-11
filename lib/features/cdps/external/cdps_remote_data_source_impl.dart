@@ -6,7 +6,7 @@ import 'package:siex/core/utils/http_responses_manager.dart';
 import 'package:siex/core/utils/path_provider.dart';
 import 'package:siex/features/cdps/data/cdps_remote_data_source.dart';
 import 'package:siex/features/cdps/domain/entities/cdps_group.dart';
-import 'package:siex/features/cdps/domain/entities/feature.dart';
+import 'package:siex/features/cdps/domain/entities/cdp.dart';
 import 'package:siex/features/cdps/external/cdps_adapter.dart';
 import '../../../core/domain/exceptions.dart';
 
@@ -25,13 +25,13 @@ class CdpsRemoteDataSourceImpl extends RemoteDataSource implements CdpsRemoteDat
   });
 
   @override
-  Future<List<Feature>> getNewCdps(String accessToken)async{
+  Future<List<Cdp>> getNewCdps(String accessToken)async{
     final response = await _getCdps(accessToken);
     return adapter.getNewCdpsFromStringBody(response.body, 'new');
   }
   
   @override
-  Future<List<Feature>> getOldCdps(String accessToken)async{
+  Future<List<Cdp>> getOldCdps(String accessToken)async{
     final response = await _getCdps(accessToken);
     return adapter.getNewCdpsFromStringBody(response.body, 'old');
   }
@@ -57,7 +57,7 @@ class CdpsRemoteDataSourceImpl extends RemoteDataSource implements CdpsRemoteDat
   }
 
   @override
-  Future<void> updateCdps(List<Feature> cdps, String accessToken)async{
+  Future<void> updateCdps(List<Cdp> cdps, String accessToken)async{
     await super.executeGeneralService(()async{
       return await client.post(
         super.getUri('${RemoteDataSource.baseApiUncodedPath}$baseCdpsUrl/update-status'),
@@ -68,7 +68,7 @@ class CdpsRemoteDataSourceImpl extends RemoteDataSource implements CdpsRemoteDat
   }
 
   @override
-  Future<File> getFeaturePdf(Feature feature, String accessToken)async{
+  Future<File> getFeaturePdf(Cdp feature, String accessToken)async{
     try{
       Completer<File> completer = Completer();
       final url = feature.pdfUrl

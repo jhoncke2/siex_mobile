@@ -1,5 +1,7 @@
 import 'package:siex/features/cdps/domain/entities/cdps_group.dart';
-import 'package:siex/features/cdps/domain/entities/feature.dart';
+import 'package:siex/features/cdps/domain/entities/cdp.dart';
+
+import '../../../../core/domain/entities/time_state.dart';
 
 class CdpsEvent{
 
@@ -14,7 +16,7 @@ class ChangeFeatureSelectionEvent extends CdpsEvent{
 
 class UpdateFeatureEvent extends CdpsEvent{
   final int index;
-  final FeatureState newState;
+  final TimeState newState;
   UpdateFeatureEvent({
     required this.index, 
     required this.newState
@@ -35,7 +37,7 @@ class ChangeCdpsTypeEvent extends CdpsEvent{
 }
 
 class LoadCdpPdfEvent extends CdpsEvent{
-  final Feature cdp;
+  final Cdp cdp;
   LoadCdpPdfEvent(this.cdp);
 }
 

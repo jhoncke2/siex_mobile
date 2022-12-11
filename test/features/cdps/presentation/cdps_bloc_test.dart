@@ -3,16 +3,18 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:siex/core/domain/entities/time_state.dart';
 import 'package:siex/core/domain/exceptions.dart';
 import 'package:siex/features/cdps/domain/cdps_failures.dart';
 import 'package:siex/features/cdps/domain/entities/cdps_group.dart';
-import 'package:siex/features/cdps/domain/entities/feature.dart';
+import 'package:siex/features/cdps/domain/entities/cdp.dart';
 import 'package:siex/features/cdps/presentation/bloc/cdps_bloc.dart';
 import 'package:siex/features/cdps/presentation/bloc/cdps_event.dart';
 import 'package:siex/features/cdps/presentation/bloc/cdps_state.dart';
 import 'package:siex/features/cdps/presentation/use_cases/get_cdp_pdf.dart';
 import 'package:siex/features/cdps/presentation/use_cases/get_cdps.dart';
 import 'package:siex/features/cdps/presentation/use_cases/update_cdps.dart';
+
 import 'cdps_bloc_test.mocks.dart';
 
 late CdpsBloc cdpsBloc;
@@ -47,14 +49,13 @@ void main(){
   group('back to cdps', _testBackToCdpsGroup);
 }
 
-
 void _testChangeFeatureSelectionGroup(){
   late CdpsGroup tCdps;
   late List<bool> tSelectionInit;
   setUp((){
     tCdps = CdpsGroup(
       newCdps: [
-        Feature(
+        Cdp(
           id: 100, 
           name: 'f_100', 
           date: DateTime.now(), 
@@ -62,15 +63,15 @@ void _testChangeFeatureSelectionGroup(){
           state: null,
           pdfUrl: 'pdf_url'
         ),
-        Feature(
+        Cdp(
           id: 101, 
           name: 'f_101', 
           date: DateTime.now(), 
           price: 2000000, 
-          state: FeatureState.Permitted,
+          state: TimeState.permitted,
           pdfUrl: 'pdf_url'
         ),
-        Feature(
+        Cdp(
           id: 102, 
           name: 'f_102', 
           date: DateTime.now(), 
@@ -80,36 +81,36 @@ void _testChangeFeatureSelectionGroup(){
         )
       ], 
       oldCdps: [
-        Feature(
+        Cdp(
           id: 200, 
           name: 'f_200', 
           date: DateTime.now(), 
           price: 2000000, 
-          state: FeatureState.Permitted,
+          state: TimeState.permitted,
           pdfUrl: 'pdf_url'
         ),
-        Feature(
+        Cdp(
           id: 201, 
           name: 'f_201', 
           date: DateTime.now(), 
           price: 2000000, 
-          state: FeatureState.Permitted,
+          state: TimeState.permitted,
           pdfUrl: 'pdf_url'
         ),
-        Feature(
+        Cdp(
           id: 202, 
           name: 'f_202', 
           date: DateTime.now(), 
           price: 2000000, 
-          state: FeatureState.Permitted,
+          state: TimeState.permitted,
           pdfUrl: 'pdf_url'
         ),
-        Feature(
+        Cdp(
           id: 203, 
           name: 'f_203', 
           date: DateTime.now(), 
           price: 2000000, 
-          state: FeatureState.Denied,
+          state: TimeState.denied,
           pdfUrl: 'pdf_url'
         )
       ]
@@ -228,13 +229,13 @@ void _testChangeFeatureSelectionGroup(){
 
 void _testUpdateCdpGroup(){
   late List<bool> tFeaturesSelection;
-  late List<Feature> tNewCdpsInit;
-  late List<Feature> tNewCdpsUpdated;
+  late List<Cdp> tNewCdpsInit;
+  late List<Cdp> tNewCdpsUpdated;
   late CdpsGroup tCdpsInit;
   late CdpsGroup tCdpsUpdated;
   test('should emit the expected ordered states when canUpdate is false and the new feature is permitted', ()async{
     tNewCdpsInit = [
-      Feature(
+      Cdp(
         id: 100, 
         name: 'f_100', 
         date: DateTime.now(), 
@@ -242,15 +243,15 @@ void _testUpdateCdpGroup(){
         state: null,
         pdfUrl: 'pdf_url'
       ),
-      Feature(
+      Cdp(
         id: 101, 
         name: 'f_101', 
         date: DateTime.now(), 
         price: 2000000, 
-        state: FeatureState.Permitted,
+        state: TimeState.permitted,
         pdfUrl: 'pdf_url'
       ),
-      Feature(
+      Cdp(
         id: 102, 
         name: 'f_102', 
         date: DateTime.now(), 
@@ -260,23 +261,23 @@ void _testUpdateCdpGroup(){
       )
     ];
     tNewCdpsUpdated = [
-      Feature(
+      Cdp(
         id: 100, 
         name: 'f_100', 
         date: DateTime.now(), 
         price: 2000000, 
-        state: FeatureState.Permitted,
+        state: TimeState.permitted,
         pdfUrl: 'pdf_url'
       ),
-      Feature(
+      Cdp(
         id: 101, 
         name: 'f_101', 
         date: DateTime.now(), 
         price: 2000000, 
-        state: FeatureState.Permitted,
+        state: TimeState.permitted,
         pdfUrl: 'pdf_url'
       ),
-      Feature(
+      Cdp(
         id: 102, 
         name: 'f_102', 
         date: DateTime.now(), 
@@ -301,12 +302,12 @@ void _testUpdateCdpGroup(){
       )
     ];
     expectLater(cdpsBloc.stream, emitsInOrder(states));
-    cdpsBloc.add(UpdateFeatureEvent(index: 0, newState: FeatureState.Permitted));
+    cdpsBloc.add(UpdateFeatureEvent(index: 0, newState: TimeState.permitted));
   });
 
   test('should emit the expected ordered states when canUpdate is false and the new feature is denied', ()async{
     tNewCdpsInit = [
-      Feature(
+      Cdp(
         id: 100, 
         name: 'f_100', 
         date: DateTime.now(), 
@@ -314,15 +315,15 @@ void _testUpdateCdpGroup(){
         state: null,
         pdfUrl: 'pdf_url'
       ),
-      Feature(
+      Cdp(
         id: 101, 
         name: 'f_101', 
         date: DateTime.now(), 
         price: 2000000, 
-        state: FeatureState.Permitted,
+        state: TimeState.permitted,
         pdfUrl: 'pdf_url'
       ),
-      Feature(
+      Cdp(
         id: 102, 
         name: 'f_102', 
         date: DateTime.now(), 
@@ -332,7 +333,7 @@ void _testUpdateCdpGroup(){
       )
     ];
     tNewCdpsUpdated = [
-      Feature(
+      Cdp(
         id: 100, 
         name: 'f_100', 
         date: DateTime.now(), 
@@ -340,20 +341,20 @@ void _testUpdateCdpGroup(){
         state: null,
         pdfUrl: 'pdf_url'
       ),
-      Feature(
+      Cdp(
         id: 101, 
         name: 'f_101', 
         date: DateTime.now(), 
         price: 2000000, 
-        state: FeatureState.Permitted,
+        state: TimeState.permitted,
         pdfUrl: 'pdf_url'
       ),
-      Feature(
+      Cdp(
         id: 102, 
         name: 'f_102', 
         date: DateTime.now(), 
         price: 2000000, 
-        state: FeatureState.Denied,
+        state: TimeState.denied,
         pdfUrl: 'pdf_url'
       )
     ];
@@ -373,12 +374,12 @@ void _testUpdateCdpGroup(){
       )
     ];
     expectLater(cdpsBloc.stream, emitsInOrder(states));
-    cdpsBloc.add(UpdateFeatureEvent(index: 2, newState: FeatureState.Denied));
+    cdpsBloc.add(UpdateFeatureEvent(index: 2, newState: TimeState.denied));
   });
 
   test('should emit the expected ordered states when canUpdate is false and the new feature is returned', ()async{
     tNewCdpsInit = [
-      Feature(
+      Cdp(
         id: 100, 
         name: 'f_100', 
         date: DateTime.now(), 
@@ -386,15 +387,15 @@ void _testUpdateCdpGroup(){
         state: null,
         pdfUrl: 'pdf_url'
       ),
-      Feature(
+      Cdp(
         id: 101, 
         name: 'f_101', 
         date: DateTime.now(), 
         price: 2000000, 
-        state: FeatureState.Permitted,
+        state: TimeState.permitted,
         pdfUrl: 'pdf_url'
       ),
-      Feature(
+      Cdp(
         id: 102, 
         name: 'f_102', 
         date: DateTime.now(), 
@@ -404,7 +405,7 @@ void _testUpdateCdpGroup(){
       )
     ];
     tNewCdpsUpdated = [
-      Feature(
+      Cdp(
         id: 100, 
         name: 'f_100', 
         date: DateTime.now(), 
@@ -412,20 +413,20 @@ void _testUpdateCdpGroup(){
         state: null,
         pdfUrl: 'pdf_url'
       ),
-      Feature(
+      Cdp(
         id: 101, 
         name: 'f_101', 
         date: DateTime.now(), 
         price: 2000000, 
-        state: FeatureState.Permitted,
+        state: TimeState.permitted,
         pdfUrl: 'pdf_url'
       ),
-      Feature(
+      Cdp(
         id: 102, 
         name: 'f_102', 
         date: DateTime.now(), 
         price: 2000000, 
-        state: FeatureState.Returned,
+        state: TimeState.returned,
         pdfUrl: 'pdf_url'
       )
     ];
@@ -445,7 +446,7 @@ void _testUpdateCdpGroup(){
       )
     ];
     expectLater(cdpsBloc.stream, emitsInOrder(states));
-    cdpsBloc.add(UpdateFeatureEvent(index: 2, newState: FeatureState.Returned));
+    cdpsBloc.add(UpdateFeatureEvent(index: 2, newState: TimeState.returned));
   });
 }
 
@@ -454,7 +455,7 @@ void _testLoadCdpsGroup(){
   setUp((){
     tCdps = CdpsGroup(
       newCdps: [
-        Feature(
+        Cdp(
           id: 100, 
           name: 'f_100', 
           date: DateTime.now(), 
@@ -462,7 +463,7 @@ void _testLoadCdpsGroup(){
           state: null,
           pdfUrl: 'pdf_url'
         ),
-        Feature(
+        Cdp(
           id: 101, 
           name: 'f_101', 
           date: DateTime.now(), 
@@ -470,7 +471,7 @@ void _testLoadCdpsGroup(){
           state: null,
           pdfUrl: 'pdf_url'
         ),
-        Feature(
+        Cdp(
           id: 102, 
           name: 'f_102', 
           date: DateTime.now(), 
@@ -480,7 +481,7 @@ void _testLoadCdpsGroup(){
         )
       ], 
       oldCdps: [
-        Feature(
+        Cdp(
           id: 200, 
           name: 'f_100', 
           date: DateTime.now(), 
@@ -488,7 +489,7 @@ void _testLoadCdpsGroup(){
           state: null,
           pdfUrl: 'pdf_url'
         ),
-        Feature(
+        Cdp(
           id: 201, 
           name: 'f_101', 
           date: DateTime.now(), 
@@ -496,7 +497,7 @@ void _testLoadCdpsGroup(){
           state: null,
           pdfUrl: 'pdf_url'
         ),
-        Feature(
+        Cdp(
           id: 202, 
           name: 'f_102', 
           date: DateTime.now(), 
@@ -504,7 +505,7 @@ void _testLoadCdpsGroup(){
           state: null,
           pdfUrl: 'pdf_url'
         ),
-        Feature(
+        Cdp(
           id: 203, 
           name: 'f_102', 
           date: DateTime.now(), 
@@ -543,7 +544,7 @@ void _testChangeCdpsTypeGroup(){
   setUp((){
     tCdps = CdpsGroup(
       newCdps: [
-        Feature(
+        Cdp(
           id: 100, 
           name: 'f_100', 
           date: DateTime.now(), 
@@ -551,7 +552,7 @@ void _testChangeCdpsTypeGroup(){
           state: null,
           pdfUrl: 'pdf_url'
         ),
-        Feature(
+        Cdp(
           id: 101, 
           name: 'f_101', 
           date: DateTime.now(), 
@@ -559,7 +560,7 @@ void _testChangeCdpsTypeGroup(){
           state: null,
           pdfUrl: 'pdf_url'
         ),
-        Feature(
+        Cdp(
           id: 102, 
           name: 'f_102', 
           date: DateTime.now(), 
@@ -569,36 +570,36 @@ void _testChangeCdpsTypeGroup(){
         )
       ], 
       oldCdps: [
-        Feature(
+        Cdp(
           id: 200, 
           name: 'f_100', 
           date: DateTime.now(), 
           price: 2000000, 
-          state: FeatureState.Permitted,
+          state: TimeState.permitted,
           pdfUrl: 'pdf_url'
         ),
-        Feature(
+        Cdp(
           id: 201, 
           name: 'f_101', 
           date: DateTime.now(), 
           price: 2000000, 
-          state: FeatureState.Permitted,
+          state: TimeState.permitted,
           pdfUrl: 'pdf_url'
         ),
-        Feature(
+        Cdp(
           id: 202, 
           name: 'f_102', 
           date: DateTime.now(), 
           price: 3000000, 
-          state: FeatureState.Permitted,
+          state: TimeState.permitted,
           pdfUrl: 'pdf_url'
         ),
-        Feature(
+        Cdp(
           id: 203, 
           name: 'f_102', 
           date: DateTime.now(), 
           price: 3000000, 
-          state: FeatureState.Permitted,
+          state: TimeState.permitted,
           pdfUrl: 'pdf_url'
         )
       ]
@@ -646,7 +647,7 @@ void _testUpdateCdpsGroup(){
   setUp((){
     tCdpsInit = CdpsGroup(
       newCdps: [
-        Feature(
+        Cdp(
           id: 100, 
           name: 'f_100', 
           date: DateTime.now(), 
@@ -654,7 +655,7 @@ void _testUpdateCdpsGroup(){
           state: null,
           pdfUrl: 'pdf_url'
         ),
-        Feature(
+        Cdp(
           id: 101, 
           name: 'f_101', 
           date: DateTime.now(), 
@@ -662,7 +663,7 @@ void _testUpdateCdpsGroup(){
           state: null,
           pdfUrl: 'pdf_url'
         ),
-        Feature(
+        Cdp(
           id: 102, 
           name: 'f_102', 
           date: DateTime.now(), 
@@ -672,36 +673,36 @@ void _testUpdateCdpsGroup(){
         )
       ], 
       oldCdps: [
-        Feature(
+        Cdp(
           id: 200, 
           name: 'f_100', 
           date: DateTime.now(), 
           price: 2000000, 
-          state: FeatureState.Permitted,
+          state: TimeState.permitted,
           pdfUrl: 'pdf_url'
         ),
-        Feature(
+        Cdp(
           id: 201, 
           name: 'f_101', 
           date: DateTime.now(), 
           price: 2000000, 
-          state: FeatureState.Permitted,
+          state: TimeState.permitted,
           pdfUrl: 'pdf_url'
         ),
-        Feature(
+        Cdp(
           id: 202, 
           name: 'f_102', 
           date: DateTime.now(), 
           price: 3000000, 
-          state: FeatureState.Permitted,
+          state: TimeState.permitted,
           pdfUrl: 'pdf_url'
         ),
-        Feature(
+        Cdp(
           id: 203, 
           name: 'f_102', 
           date: DateTime.now(), 
           price: 3000000, 
-          state: FeatureState.Permitted,
+          state: TimeState.permitted,
           pdfUrl: 'pdf_url'
         )
       ]
@@ -719,7 +720,7 @@ void _testUpdateCdpsGroup(){
     setUp((){
       tCdpsUpdated = CdpsGroup(
         newCdps: [
-          Feature(
+          Cdp(
             id: 101, 
             name: 'f_101', 
             date: DateTime.now(), 
@@ -727,7 +728,7 @@ void _testUpdateCdpsGroup(){
             state: null,
             pdfUrl: 'pdf_url'
           ),
-          Feature(
+          Cdp(
             id: 102, 
             name: 'f_102', 
             date: DateTime.now(), 
@@ -737,44 +738,44 @@ void _testUpdateCdpsGroup(){
           )
         ], 
         oldCdps: [
-          Feature(
+          Cdp(
             id: 100, 
             name: 'f_100', 
             date: DateTime.now(), 
             price: 2000000, 
-            state: FeatureState.Permitted,
+            state: TimeState.permitted,
             pdfUrl: 'pdf_url'
           ),
-          Feature(
+          Cdp(
             id: 200, 
             name: 'f_100', 
             date: DateTime.now(), 
             price: 2000000, 
-            state: FeatureState.Permitted,
+            state: TimeState.permitted,
             pdfUrl: 'pdf_url'
           ),
-          Feature(
+          Cdp(
             id: 201, 
             name: 'f_101', 
             date: DateTime.now(), 
             price: 2000000, 
-            state: FeatureState.Permitted,
+            state: TimeState.permitted,
             pdfUrl: 'pdf_url'
           ),
-          Feature(
+          Cdp(
             id: 202, 
             name: 'f_102', 
             date: DateTime.now(), 
             price: 3000000, 
-            state: FeatureState.Permitted,
+            state: TimeState.permitted,
             pdfUrl: 'pdf_url'
           ),
-          Feature(
+          Cdp(
             id: 203, 
             name: 'f_102', 
             date: DateTime.now(), 
             price: 3000000, 
-            state: FeatureState.Permitted,
+            state: TimeState.permitted,
             pdfUrl: 'pdf_url'
           )
         ]
@@ -877,22 +878,22 @@ void _testUpdateCdpsGroup(){
 }
 
 void _testLoadCdpPdfGroup(){
-  late Feature tSelectedCdp;
+  late Cdp tSelectedCdp;
   late CdpsGroup tCdps;
   late List<bool> tFeaturesSelection;
   late bool tCanUpdateNewCdps;
   setUp((){
     tCdps = CdpsGroup(
       newCdps: [
-        Feature(
+        Cdp(
           id: 0, 
           name: 'cpd_0', 
-          state: FeatureState.Permitted, 
+          state: TimeState.permitted, 
           date: DateTime.now(),
           price: 2000,
           pdfUrl: 'pdf_url_0'
         ),
-        Feature(
+        Cdp(
           id: 1, 
           name: 'cpd_1',
           state: null, 
@@ -902,18 +903,18 @@ void _testLoadCdpPdfGroup(){
         )
       ], 
       oldCdps: [
-        Feature(
+        Cdp(
           id: 2, 
           name: 'cpd_2', 
-          state: FeatureState.Denied, 
+          state: TimeState.denied, 
           date: DateTime.now(),
           price: 2000,
           pdfUrl: 'pdf_url_2'
         ),
-        Feature(
+        Cdp(
           id: 3, 
           name: 'cpd_3', 
-          state: FeatureState.Permitted, 
+          state: TimeState.permitted, 
           date: DateTime.now(),
           price: 2000,
           pdfUrl: 'pdf_url_3'
@@ -1107,15 +1108,15 @@ void _testBackToCdpsGroup(){
   setUp((){
     tCdps = CdpsGroup(
       newCdps: [
-        Feature(
+        Cdp(
           id: 0, 
           name: 'cpd_0', 
-          state: FeatureState.Permitted, 
+          state: TimeState.permitted, 
           date: DateTime.now(),
           price: 2000,
           pdfUrl: 'pdf_url_0'
         ),
-        Feature(
+        Cdp(
           id: 1, 
           name: 'cpd_1',
           state: null, 
@@ -1125,18 +1126,18 @@ void _testBackToCdpsGroup(){
         )
       ], 
       oldCdps: [
-        Feature(
+        Cdp(
           id: 2, 
           name: 'cpd_2', 
-          state: FeatureState.Denied, 
+          state: TimeState.denied, 
           date: DateTime.now(),
           price: 2000,
           pdfUrl: 'pdf_url_2'
         ),
-        Feature(
+        Cdp(
           id: 3, 
           name: 'cpd_3', 
-          state: FeatureState.Permitted, 
+          state: TimeState.permitted, 
           date: DateTime.now(),
           price: 2000,
           pdfUrl: 'pdf_url_3'

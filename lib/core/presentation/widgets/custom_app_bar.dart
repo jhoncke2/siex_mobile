@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:siex/app_theme.dart';
-import '../../../../globals.dart';
-import '../../../authentication/presentation/bloc/authentication_bloc.dart';
-class Appbar extends StatelessWidget {
-  const Appbar({Key? key}) : super(key: key);
+import '../../../globals.dart';
+import '../../../features/authentication/presentation/bloc/authentication_bloc.dart';
+class CustomAppBar extends StatelessWidget {
+  const CustomAppBar({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

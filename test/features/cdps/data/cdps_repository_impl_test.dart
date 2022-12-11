@@ -4,14 +4,15 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:siex/core/domain/entities/time_state.dart';
 import 'package:siex/core/domain/exceptions.dart';
 import 'package:siex/core/external/user_extra_info_getter.dart';
 import 'package:siex/features/cdps/data/cdps_remote_data_source.dart';
 import 'package:siex/features/cdps/data/cdps_repository_impl.dart';
 import 'package:siex/features/cdps/domain/cdps_failures.dart';
 import 'package:siex/features/cdps/domain/entities/cdps_group.dart';
-import 'package:siex/features/cdps/domain/entities/feature.dart';
-import 'budgets_repository_impl_test.mocks.dart';
+import 'package:siex/features/cdps/domain/entities/cdp.dart';
+import 'cdps_repository_impl_test.mocks.dart';
 
 late CdpsRepositoryImpl budgetsRepository;
 late MockCdpsRemoteDataSource remoteDataSource;
@@ -51,7 +52,7 @@ void _testGetCdpsGroup(){
     setUp((){
       tCdps = CdpsGroup(
         newCdps: [
-          Feature(
+          Cdp(
             id: 100, 
             name: 'f_100', 
             state: null, 
@@ -59,7 +60,7 @@ void _testGetCdpsGroup(){
             price: 2000000,
             pdfUrl: 'pdf_url'
           ),
-          Feature(
+          Cdp(
             id: 101, 
             name: 'f_101', 
             state: null, 
@@ -69,34 +70,34 @@ void _testGetCdpsGroup(){
           )
         ],
         oldCdps: [
-          Feature(
+          Cdp(
             id: 200, 
             name: 'f_200', 
-            state: FeatureState.Denied, 
+            state: TimeState.denied, 
             date: DateTime.now(), 
             price: 2000000,
             pdfUrl: 'pdf_url'
           ),
-          Feature(
+          Cdp(
             id: 201, 
             name: 'f_201', 
-            state: FeatureState.Permitted, 
+            state: TimeState.permitted, 
             date: DateTime.now(), 
             price: 2000000,
             pdfUrl: 'pdf_url'
           ),
-          Feature(
+          Cdp(
             id: 200, 
             name: 'f_200', 
-            state: FeatureState.Denied, 
+            state: TimeState.denied, 
             date: DateTime.now(), 
             price: 2000000,
             pdfUrl: 'pdf_url'
           ),
-          Feature(
+          Cdp(
             id: 201, 
             name: 'f_201', 
-            state: FeatureState.Permitted, 
+            state: TimeState.permitted, 
             date: DateTime.now(), 
             price: 2000000,
             pdfUrl: 'pdf_url'
@@ -148,40 +149,40 @@ void _testGetCdpsGroup(){
 
 void _testUpdateCdpsGroup(){
   late String tAccessToken;
-  late List<Feature> tUpdatedCdps;
+  late List<Cdp> tUpdatedCdps;
   setUp((){
     tAccessToken = 'access_token';
     when(userExtraInfoGetter.getAccessToken())
         .thenAnswer((_) async => tAccessToken);
     tUpdatedCdps = [
-      Feature(
+      Cdp(
         id: 200, 
         name: 'f_200', 
-        state: FeatureState.Denied, 
+        state: TimeState.denied, 
         date: DateTime.now(), 
         price: 2000000,
         pdfUrl: 'pdf_url'
       ),
-      Feature(
+      Cdp(
         id: 201, 
         name: 'f_201', 
-        state: FeatureState.Permitted, 
+        state: TimeState.permitted, 
         date: DateTime.now(), 
         price: 2000000,
         pdfUrl: 'pdf_url'
       ),
-      Feature(
+      Cdp(
         id: 200, 
         name: 'f_200', 
-        state: FeatureState.Denied, 
+        state: TimeState.denied, 
         date: DateTime.now(), 
         price: 2000000,
         pdfUrl: 'pdf_url'
       ),
-      Feature(
+      Cdp(
         id: 201, 
         name: 'f_201', 
-        state: FeatureState.Permitted, 
+        state: TimeState.permitted, 
         date: DateTime.now(), 
         price: 2000000,
         pdfUrl: 'pdf_url'
@@ -229,15 +230,15 @@ void _testUpdateCdpsGroup(){
 
 void _testGetCdpPdfGroup(){
   late String tAccessToken;
-  late Feature tCdp;
+  late Cdp tCdp;
   
   setUp((){
     tAccessToken = 'access_token';
-    tCdp = Feature(
+    tCdp = Cdp(
       id: 0,
       name: 'user name',
       price: 20000,
-      state: FeatureState.Denied,
+      state: TimeState.denied,
       pdfUrl: 'pdf_url',
       date: DateTime.now()
     );
