@@ -31,19 +31,22 @@ class CustomAppBar extends StatelessWidget {
           BlocBuilder<AuthenticationBloc, AuthenticationState>(
             builder: (authContext, authState) {
               _managePostFrameCallBacks(authContext, authState);
-              return FloatingActionButton(
-                backgroundColor: AppColors.secondary,
-                mini: true,
-                heroTag: 'logout_button',
-                onPressed: (authState is OnLoadingAuthentication)? 
-                  null : 
-                  (){
-                      BlocProvider.of<AuthenticationBloc>(context).add(LogoutEvent());
-                  },
-                child: Icon(
-                  Icons.exit_to_app,
-                  size: dimens.littleIconSize,
-                )
+              return ((authState is OnLoadingAuthentication)?
+                  Container():
+                  FloatingActionButton(
+                    backgroundColor: AppColors.secondary,
+                    mini: true,
+                    heroTag: 'logout_button',
+                    onPressed: (authState is OnLoadingAuthentication)? 
+                      null : 
+                      (){
+                          BlocProvider.of<AuthenticationBloc>(context).add(LogoutEvent());
+                      },
+                    child: Icon(
+                      Icons.exit_to_app,
+                      size: dimens.littleIconSize,
+                    )
+                  )
               );
             }
           )

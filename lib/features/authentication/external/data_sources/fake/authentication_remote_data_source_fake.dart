@@ -25,6 +25,8 @@ class AuthenticationRemoteDataSourceFake implements AuthenticationRemoteDataSour
   
   @override
   Future<void> logout(String accessToken)async{
-    
+    await Future.delayed(const Duration(
+      milliseconds: 750
+    ));
   }
 }

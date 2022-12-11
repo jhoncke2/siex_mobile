@@ -37,7 +37,7 @@ class ItemsTypeChoosingButton extends StatelessWidget {
           child: Text(
             name,
             style: TextStyle(
-              color: isEnabled? AppColors.textPrimary: Colors.grey,
+              color: isEnabled? AppColors.textPrimary: AppColors.secondary,
               fontSize: 17
             ),
           ),

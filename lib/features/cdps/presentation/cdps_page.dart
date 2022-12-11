@@ -51,25 +51,33 @@ class CdpsPage extends StatelessWidget{
                 BlocBuilder<CdpsBloc, CdpsState>(
                   builder: (blocContext, blocState){
                     _managePostFrameMethods(blocContext, blocState);
-                    return Column(
-                      children: [
-                        (
-                          (blocState is OnShowingCdps)?
-                            CdpsView():
-                            (blocState is OnCdpPdf)?
-                              PdfView(file: blocState.pdf):
-                              const CircularProgressIndicator()
-                        ),
-                        (
-                          (blocState is OnError)?
-                            ErrorPanel(
-                              visible: true, 
-                              errorTitle: 'Ha ocurrido un error', 
-                              errorContent: (blocState as OnError).message
-                            ):
-                            Container()
-                        )
-                      ],
+                    return WillPopScope(
+                      onWillPop: ()async{
+                        if(blocState is OnCdpPdf){
+                          BlocProvider.of<CdpsBloc>(blocContext).add(BackToCdpsEvent());
+                        }
+                        return false;
+                      },
+                      child: Column(
+                        children: [
+                          (
+                            (blocState is OnShowingCdps)?
+                              CdpsView():
+                              (blocState is OnCdpPdf)?
+                                PdfView(file: blocState.pdf):
+                                const CircularProgressIndicator()
+                          ),
+                          (
+                            (blocState is OnError)?
+                              ErrorPanel(
+                                visible: true, 
+                                errorTitle: 'Ha ocurrido un error', 
+                                errorContent: (blocState as OnError).message
+                              ):
+                              Container()
+                          )
+                        ],
+                      ),
                     );
                   }
                 ),
