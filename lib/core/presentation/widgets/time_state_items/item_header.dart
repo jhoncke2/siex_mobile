@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
-import '../../domain/entities/feature.dart';
-import 'feature_state_button.dart';
+import '../../../domain/entities/time_state.dart';
+import 'item_state_button.dart';
 
-class FeatureHeader extends StatelessWidget{
+class ItemHeader extends StatelessWidget{
   final int index;
-  final Feature feature;
+  final String title;
+  final TimeState? currentItemState;
   final bool enabled;
-  const FeatureHeader({
+  final Function(int, TimeState) onChangeItemState;
+  const ItemHeader({
     required this.index,
-    required this.feature,
+    required this.title,
+    required this.currentItemState,
     required this.enabled,
+    required this.onChangeItemState,
     super.key
   });
   @override
@@ -29,36 +33,39 @@ class FeatureHeader extends StatelessWidget{
           SizedBox(
             width: screenWidth * 0.28,
             child: Text(
-              feature.name,
+              title,
               style: TextStyle(
                 fontSize: screenWidth * 0.04,
                 color: Colors.black
               ),
             ),
           ),
-          FeatureStateButton(
-            selectionState: FeatureState.Permitted,
+          ItemStateButton(
+            buttonSelectionState: TimeState.permitted,
+            currentItemState: currentItemState,
             index: index,
-            feature: feature,
             screenWidth: screenWidth, 
             name: 'Aceptar',
             enabled: enabled,
+            onChangeItemState: onChangeItemState
           ),
-          FeatureStateButton(
-            selectionState: FeatureState.Denied,
+          ItemStateButton(
+            buttonSelectionState: TimeState.denied,
+            currentItemState: currentItemState,
             index: index,
-            feature: feature,
             screenWidth: screenWidth, 
             name: 'Denegar',
             enabled: enabled,
+            onChangeItemState: onChangeItemState
           ),
-          FeatureStateButton(
-            selectionState: FeatureState.Returned,
+          ItemStateButton(
+            buttonSelectionState: TimeState.returned,
+            currentItemState: currentItemState,
             index: index,
-            feature: feature,
             screenWidth: screenWidth, 
             name: 'Devolver',
             enabled: enabled,
+            onChangeItemState: onChangeItemState
           )
         ],
       ),

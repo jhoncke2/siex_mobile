@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:siex/features/cdps/domain/entities/feature.dart';
+import 'package:siex/features/cdps/domain/entities/cdp.dart';
 
 enum CdpsType{
   newType,
@@ -7,8 +7,8 @@ enum CdpsType{
 }
 
 class CdpsGroup extends Equatable{
-  final List<Feature> newCdps;
-  final List<Feature> oldCdps;
+  final List<Cdp> newCdps;
+  final List<Cdp> oldCdps;
   const CdpsGroup({
     required this.newCdps, 
     required this.oldCdps

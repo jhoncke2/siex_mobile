@@ -1,20 +1,15 @@
 // ignore_for_file: constant_identifier_names, must_be_immutable
 import 'package:equatable/equatable.dart';
+import '../../../../core/domain/entities/time_state.dart';
 
-enum FeatureState{
-  Permitted,
-  Denied,
-  Returned
-}
-
-class Feature extends Equatable{
+class Cdp extends Equatable{
   final int id;
   final String name;
   final DateTime date;
   final double price;
   final String pdfUrl;
-  FeatureState? state;
-  Feature({
+  TimeState? state;
+  Cdp({
     required this.id, 
     required this.name, 
     required this.state,

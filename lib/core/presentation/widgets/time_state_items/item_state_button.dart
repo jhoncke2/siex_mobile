@@ -1,28 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:siex/features/cdps/domain/entities/feature.dart';
-import 'package:siex/features/cdps/presentation/bloc/cdps_event.dart';
-import '../bloc/cdps_bloc.dart';
+import '../../../domain/entities/time_state.dart';
 
-class FeatureStateButton extends StatelessWidget{
-  final FeatureState selectionState;
+class ItemStateButton extends StatelessWidget{
+  final TimeState buttonSelectionState;
+  final TimeState? currentItemState;
   final int index;
-  final Feature feature;
   final double screenWidth;
   final String name;
   final bool enabled;
-  const FeatureStateButton({
-    required this.selectionState,
+  final Function(int, TimeState) onChangeItemState;
+  const ItemStateButton({
+    required this.buttonSelectionState,
+    required this.currentItemState,
     required this.index,
-    required this.feature, 
     required this.screenWidth,
     required this.name,
     required this.enabled,
+    required this.onChangeItemState,
     super.key  
   });
   @override
   Widget build(BuildContext context) {
-    final buttonIsSelected = feature.state == selectionState;
+    final buttonIsSelected = currentItemState == buttonSelectionState;
     final buttonIsLocked = !enabled || buttonIsSelected;
     return Column(
       children: [
@@ -31,14 +30,12 @@ class FeatureStateButton extends StatelessWidget{
           mini: true,
           elevation: 0,
           backgroundColor: Colors.transparent,
-          onPressed: buttonIsLocked? null : (){
-            BlocProvider.of<CdpsBloc>(context).add(UpdateFeatureEvent(index: index, newState: selectionState));
-          },
+          onPressed: buttonIsLocked? null : () => onChangeItemState(index, buttonSelectionState),
           child: Icon(
             Icons.circle,
             color: buttonIsSelected? Colors.lightGreen : Colors.grey,
             size: screenWidth * 0.03,
-          ),
+          )
         ),
         Text(
           name,
@@ -46,8 +43,7 @@ class FeatureStateButton extends StatelessWidget{
             fontSize: 11.5
           ),
         )
-      ],
+      ]
     );
   }
-
 }

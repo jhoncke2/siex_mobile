@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:siex/app_theme.dart';
-import 'package:siex/features/cdps/domain/entities/feature.dart';
-import 'package:siex/features/cdps/presentation/bloc/cdps_bloc.dart';
+import 'package:siex/features/cdps/domain/entities/cdp.dart';
 import 'package:siex/features/cdps/presentation/bloc/cdps_event.dart';
 
-class FeatureBody extends StatelessWidget{
-  final Feature feature;
-  const FeatureBody({
+import '../bloc/cdps_bloc.dart';
+
+class CdpBody extends StatelessWidget{
+  final Cdp feature;
+  const CdpBody({
     required this.feature,
     super.key
   });
